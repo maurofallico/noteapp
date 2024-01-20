@@ -25,7 +25,7 @@ export default function Note({selected, filter, reload, setReload}) {
 
   const fetchNotes = async () => {
     try {
-      let apiUrl = "http://localhost:3000/api/notes";
+      let apiUrl = "/api/notes";
 
       const queryParams = new URLSearchParams();
 

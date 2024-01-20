@@ -11,7 +11,7 @@ export default function ArchiveNote({ noteId, selected, onArchiveChange }) {
     const fetchArchive = async () => {
       try {
         if (noteId) {
-          const response = await axios.get(`http://localhost:3000/api/notes/${noteId}`);
+          const response = await axios.get(`/api/notes/${noteId}`);
           const data = await response.data
           const archiveValue = data.archive;
           setArchive(archiveValue);
@@ -29,7 +29,7 @@ export default function ArchiveNote({ noteId, selected, onArchiveChange }) {
       const updatedArchive = !archive;
       setArchive(updatedArchive);
 
-      await axios.put(`http://localhost:3000/api/notes/${noteId}`, {
+      await axios.put(`/api/notes/${noteId}`, {
           archive: updatedArchive,
       });
 

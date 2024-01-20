@@ -60,7 +60,7 @@ export default function CreateNote({reload, setReload}) {
   async function onSubmit() {
     if (title && content) {
       try {
-        await axios.post("http://localhost:3000/api/notes", {
+        await axios.post("/api/notes", {
             title: title,
             category: categoryList,
             content: content,
