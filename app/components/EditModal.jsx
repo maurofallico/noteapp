@@ -58,7 +58,7 @@ export default function EditModal({ noteId, reload, setReload }) {
 
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/notes/${noteId}`
+        `/api/notes/${noteId}`
       );
       const data = await response.data;
       setTitle(data.title);
@@ -80,7 +80,7 @@ export default function EditModal({ noteId, reload, setReload }) {
   async function onSubmit() {
     if (title && content) {
       try {
-        await axios.put(`http://localhost:3000/api/notes/${noteId}`, {
+        await axios.put(`/api/notes/${noteId}`, {
           title: title,
           category: categoryList,
           content: content,

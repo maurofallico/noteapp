@@ -11,7 +11,7 @@ export default function DeleteModal({ noteId, reload, setReload }){
 
     async function deleteNote(noteId) {
         try {
-          await axios.delete(`http://localhost:3000/api/notes/${noteId}`);
+          await axios.delete(`/api/notes/${noteId}`);
           setIsOpen(false)
           setReload(!reload)
         } catch (error) {
