@@ -45,7 +45,7 @@ export default function SearchBar({ setFilters }) {
 
   return (
     <div className="flex flex-col w-screen sm:px-64 justify-center items-center gap-0">
-      <div className="flex flex-col sm:flex-row gap-2">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-2">
         <input
           type="search"
           value={filter}
@@ -55,8 +55,8 @@ export default function SearchBar({ setFilters }) {
           onKeyDown={handleEnter}
           className={`${
             filters.length >= 3
-              ? "bg-white border-none text-sm sm:text-xl px-2 sm:px-3 pb-0.5 placeholder:text-gray-400 rounded sm:rounded-xl w-64 sm:w-96 opacity-50"
-              : "bg-white border-none text-sm sm:text-xl px-2 sm:px-3 pb-0.5 placeholder:text-gray-400 rounded sm:rounded-xl w-64 sm:w-96"
+              ? "bg-white border-2 border-slate-700 text-sm sm:text-xl px-2 sm:px-3 pb-0.5 placeholder:text-gray-400 rounded sm:rounded-lg w-64 sm:w-96 opacity-50"
+              : " bg-white border-2 border-slate-700 text-sm sm:text-xl px-2 sm:px-3 pb-0.5 placeholder:text-gray-400 rounded sm:rounded-lg w-64 sm:w-96"
           }`}
         ></input>
         <button
@@ -65,7 +65,7 @@ export default function SearchBar({ setFilters }) {
           className={`${
             filters.length >= 3
               ? "text-xs border-black rounded-lg w-18 sm:w-20 self-center sm:h-7 h-6 sm:rounded-xl px-2 opacity-50"
-              : "text-xs border border-black rounded-lg w-18 sm:w-20 self-center sm:h-7 h-6 sm:rounded-xl px-2  bg-gray-100 hover:bg-gray-200"
+              : "text-xs border border-black rounded-lg w-18 sm:w-20 self-center h-fit py-1.5 sm:rounded-lg px-2  bg-gray-100 hover:bg-gray-200"
           }`}
         >
           Add Filter
