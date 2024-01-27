@@ -9,7 +9,8 @@ import { useState, useEffect } from "react";
 
 export default function Note({selected, filter, reload, setReload}) {
 
-  const [loading, setLoading] = useState(false)
+  const [loadingArchive, setLoadingArchive] = useState(false)
+  const [loading, setLoading] = useState(true)
   
 
   const breakpoints = {
@@ -55,6 +56,7 @@ export default function Note({selected, filter, reload, setReload}) {
        data.sort((a, b) => a.id - b.id);
 
       setNotes(data);
+      setLoading(false)
     } catch (error) {
       console.log(error);
     }
@@ -64,9 +66,11 @@ export default function Note({selected, filter, reload, setReload}) {
     fetchNotes();
   }, [selected, filter, reload])
 
+
+
   const archiveFunction = async (noteId) => {
     try {
-      setLoading((prevLoading) => ({
+      setLoadingArchive((prevLoading) => ({
         ...prevLoading,
         [noteId]: true,
       }));
@@ -80,7 +84,7 @@ export default function Note({selected, filter, reload, setReload}) {
       });
   
       await fetchNotes()
-      setLoading((prevLoading) => ({
+      setLoadingArchive((prevLoading) => ({
         ...prevLoading,
         [noteId]: false,
       }));
@@ -90,43 +94,83 @@ export default function Note({selected, filter, reload, setReload}) {
   };
 
   return (
-    <div className="w-screen flex flex-col sm:px-64 gap-y-8 sm:gap-y-4   ">
-      <Masonry
-      breakpointCols={breakpoints}
-      className='my-masonry-grid'
-      columnClassName='my-masonry-grid_column'
-      
-      >
-      {notes && notes.length > 0 && notes.map((note, index) => (
-        <div
-          key={index}
-          className={` sm:mb-0 mb-6 shadow-md sm:shadow-xl bg-gradient-to-r 2xl:w-[450px] lg:w-[420px] md:w-[380px] text-sm sm:text-base w-screen sm:h-fit sm:rounded-2xl px-3 py-2  ${NoteColors[note.id % NoteColors.length]}`}
-        >
-          <div className="flex flex-row justify-between gap-8 mb-4">
-            <div className="flex flex-col gap-2">
-            {note.category?.map((cat, index) => (
-              <div key={index} className="flex">
-              <p className="bg-yellow-100 px-2 border border-black border-opacity-20 rounded-lg">#{cat}</p>
-              </div>
-            ))}
-            </div>
-            <p className="text-lg text-center h-fit">
-              <strong>{note.title}</strong>
-            </p>
-            <div className="flex gap-2 items-start text-xl">
-            {loading[note.id]? (<span className="loading loading-spinner loading-sm"></span>) :
-            (<button title="Archive" onMouseOver={(e) => e.target.focus()} onClick={() => {archiveFunction(note.id)}}><IoMdArchive className={note.archive ? "text-green-500" : ""} /></button>)}
-            <EditModal reload={reload} setReload={setReload} noteId={note.id}/>
-            <DeleteModal reload={reload} setReload={setReload} noteId={note.id}  />
-            </div>
-          </div>
-          <div className="h-full items-start">
-          <p className="flex text-pretty px-2 text-md mb-3 overflow-hidden max-h-fit "
-          dangerouslySetInnerHTML={{ __html: note.content ? note.content.replace(/\n/g, '<br />') : '' }}/>
-          </div>
+    <>
+      {loading ? (
+        <div className="w-screen h-screen justify-center items-start sm:mt-24 flex">
+        <span className="loading loading-spinner loading-lg scale-150"></span>
         </div>
-      ))}
-    </Masonry>
-    </div>
+      ) : (
+        <div className="w-screen flex flex-col sm:px-64 gap-y-8 sm:gap-y-4   ">
+          <Masonry
+            breakpointCols={breakpoints}
+            className="my-masonry-grid"
+            columnClassName="my-masonry-grid_column"
+          >
+            {notes &&
+              notes.length > 0 &&
+              notes?.map((note, index) => (
+                <div
+                  key={index}
+                  className={` sm:mb-0 mb-6 shadow-md sm:shadow-xl bg-gradient-to-r 2xl:w-[450px] lg:w-[420px] md:w-[380px] text-sm sm:text-base w-screen sm:h-fit sm:rounded-2xl px-3 py-2  ${NoteColors[
+                    note.id % NoteColors.length
+                  ]}`}
+                >
+                  <div className="flex flex-row justify-between gap-8 mb-4">
+                    <div className="flex flex-col gap-2">
+                      {note.category?.map((cat, index) => (
+                        <div key={index} className="flex">
+                          <p className="bg-yellow-100 px-2 border border-black border-opacity-20 rounded-lg">
+                            #{cat}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-lg text-center h-fit">
+                      <strong>{note.title}</strong>
+                    </p>
+                    <div className="flex gap-2 items-start text-xl">
+                      {loadingArchive[note.id] ? (
+                        <span className="loading loading-spinner loading-sm"></span>
+                      ) : (
+                        <button
+                          title="Archive"
+                          onMouseOver={(e) => e.target.focus()}
+                          onClick={() => {
+                            archiveFunction(note.id);
+                          }}
+                        >
+                          <IoMdArchive
+                            className={note.archive ? "text-green-500" : ""}
+                          />
+                        </button>
+                      )}
+                      <EditModal
+                        reload={reload}
+                        setReload={setReload}
+                        noteId={note.id}
+                      />
+                      <DeleteModal
+                        reload={reload}
+                        setReload={setReload}
+                        noteId={note.id}
+                      />
+                    </div>
+                  </div>
+                  <div className="h-full items-start">
+                    <p
+                      className="flex text-pretty px-2 text-md mb-3 overflow-hidden max-h-fit "
+                      dangerouslySetInnerHTML={{
+                        __html: note.content
+                          ? note.content.replace(/\n/g, "<br />")
+                          : "",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+          </Masonry>
+        </div>
+      )}
+    </>
   );
 }
