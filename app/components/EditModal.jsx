@@ -109,7 +109,7 @@ export default function EditModal({ noteId, reload, setReload }) {
 
   return (
     <>
-      <button onClick={() => handleEdit(noteId)} className="h-fit">
+      <button title="Edit" onMouseOver={(e) => e.target.focus()} onClick={() => handleEdit(noteId)} className="h-fit">
         <FaRegEdit />
       </button>
       {isOpen ? (
