@@ -91,7 +91,7 @@ export default function CreateNote({reload, setReload}) {
 
   return (
     <>
-      <button onClick={() => setIsOpen(true)} className="sm:bg-opacity-100 bg-opacity-90 bg-orange-600 sm:px-3.5 sm:py-1 py-0.5 px-2.5  rounded-lg sm:rounded-xl text-base">
+      <button onClick={() => setIsOpen(true)} className="sm:bg-opacity-100 bg-opacity-90 bg-orange-600 sm:px-3.5 py-0.5 px-2.5  rounded-lg sm:rounded-xl text-base sm:text-xl">
         Create
       </button>
       {isOpen ? (
