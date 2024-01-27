@@ -114,7 +114,7 @@ export default function EditModal({ noteId, reload, setReload }) {
       </button>
       {isOpen ? (
         <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
-          <div className="bg-blue-100 p-3 sm:rounded-xl flex flex-col items-center gap-2 w-screen sm:w-[450px] h-[490px]">
+          <div className="bg-blue-50 shadow-2xl border-2 border-slate-700 p-3 sm:rounded-xl flex flex-col items-center gap-2 w-screen sm:w-[450px] h-[490px]">
             <button onClick={() => cancelEdit()} className="flex self-end">
               <CgClose className="hover:text-red-600 text-lg" />
             </button>
