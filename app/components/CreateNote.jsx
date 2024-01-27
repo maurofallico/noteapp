@@ -91,12 +91,12 @@ export default function CreateNote({reload, setReload}) {
 
   return (
     <>
-      <button onClick={() => setIsOpen(true)} className="">
-        Create Note
+      <button onClick={() => setIsOpen(true)} className="sm:bg-opacity-100 bg-opacity-90 bg-orange-600 sm:px-3.5 sm:py-1 py-0.5 px-2.5  rounded-lg sm:rounded-xl text-base">
+        Create
       </button>
       {isOpen ? (
         <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
-          <div className="bg-blue-100 py-2 sm:rounded-xl flex flex-col items-center gap-2 sm:w-[450px] w-screen h-[490px]">
+          <div className="bg-blue-50 shadow-2xl border-2 border-slate-700 text-black py-2 sm:rounded-xl flex flex-col items-center gap-2 sm:w-[450px] w-screen h-[490px]">
             <button
               onClick={() => cancelCreate()}
               className="flex self-end px-2"
@@ -191,7 +191,7 @@ export default function CreateNote({reload, setReload}) {
                   onClick={() => {
                     onSubmit();
                   }}
-                  className="border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-1 self-end mt-1"
+                  className="border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-0.5 self-end mt-1"
                 >
                   Create
                 </button>

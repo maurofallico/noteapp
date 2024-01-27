@@ -5,12 +5,12 @@ import CreateNote from './CreateNote'
 export default function NavBar({selected, setSelected, reload, setReload}){
 
     return(
-        <div className='w-screen flex justify-center'>
-        <div className="bg-blue-300 w-[1240px] sm:h-24 py-3 sm:mt-8 flex sm:flex-row flex-col sm:rounded-xl sm:items-center px-5 sm:justify-between ">
+        <div className='w-screen flex justify-center text-gray-50'>
+        <div className="bg-slate-700 w-screen sm:h-24 py-3 flex sm:flex-row flex-col sm:items-center sm:px-64 px-5 sm:justify-between ">
         <p className='sm:text-5xl text-3xl self-center sm:mb-1 mb-5'>NoteApp</p>
-        <div className='flex justify-center sm:gap-24 gap-8 text-sm sm:text-2xl '>
-        <button onClick={() => setSelected('active')} className={`${selected==='active' ? 'text-orange-700 underline ' : ''}`}>Active Notes</button>
-        <button onClick={() => setSelected('archived')} className={`${selected==='archived' ? 'text-orange-700 underline ' : ''}`}>Archived Notes</button>
+        <div className='flex justify-center sm:gap-20 gap-8 text-base sm:text-xl '>
+        <button onClick={() => setSelected('active')} className={`${selected==='active' ? 'text-gray-50 underline ' : 'text-gray-400'}`}>Active</button>
+        <button onClick={() => setSelected('archived')} className={`${selected==='archived' ? 'text-gray-50 underline' : 'text-gray-400'}`}>Archived</button>
         <CreateNote reload={reload} setReload={setReload}/>
         </div>
         </div>

@@ -4,23 +4,30 @@ import DeleteModal from "./DeleteModal";
 import EditModal from "./EditModal"
 import ArchiveNote from './ArchiveNote'
 import axios from 'axios'
+import Masonry from 'react-masonry-css'
+
 
 import { useState, useEffect } from "react";
 
 export default function Note({selected, filter, reload, setReload}) {
+
+  const breakpoints = {
+    default: 3,
+ 
+  }
   
    const [notes, setNotes] = useState([""]); 
   const NoteColors = [
-    "bg-blue-100",
-    "bg-green-100",
-    "bg-lime-200",
-    "bg-red-200",
-    "bg-pink-100",
-    "bg-cyan-200",
-    "bg-purple-200",
-    "bg-amber-50",
-    "bg-darkgreen-100",
-    "bg-orange-200",
+    "from-blue-200 to-blue-100",
+    "from-green-200 to-green-100",
+    "from-lime-200 to-lime-100",
+    "from-red-200 to-red-100",
+    "from-pink-200 to-pink-100",
+    "from-cyan-200 to-cyan-100",
+    "from-purple-200 to-purple-100",
+    "from-amber-200 to-amber-100",
+    "from-darkgreen-200 to-darkgreen-100",
+    "from-orange-200 to-orange-100",
   ];
 
   const fetchNotes = async () => {
@@ -44,7 +51,7 @@ export default function Note({selected, filter, reload, setReload}) {
       }
       const response = await axios.get(apiUrl);
       const data = await response.data
-      /* data.sort((a, b) => a.id - b.id); */
+       data.sort((a, b) => a.id - b.id);
       setNotes(data);
     } catch (error) {
       console.log(error);
@@ -60,11 +67,17 @@ export default function Note({selected, filter, reload, setReload}) {
   };
 
   return (
-    <>
+    <div className="w-screen flex flex-col sm:px-64 gap-y-8 sm:gap-y-4   ">
+      <Masonry
+      breakpointCols={breakpoints}
+      className='my-masonry-grid'
+      columnClassName='my-masonry-grid_column'
+      
+      >
       {notes && notes.length > 0 && notes.map((note, index) => (
         <div
           key={index}
-          className={`bg-blue-200 2xl:w-[450px] lg:w-[420px] md:w-[380px]   text-sm sm:text-base w-screen sm:h-fit sm:rounded-2xl px-3 py-2 flex flex-col gap-0 ${NoteColors[note.id % NoteColors.length]}`}
+          className={` sm:mb-0 mb-6 shadow-md sm:shadow-xl bg-gradient-to-r 2xl:w-[450px] lg:w-[420px] md:w-[380px] text-sm sm:text-base w-screen sm:h-fit sm:rounded-2xl px-3 py-2  ${NoteColors[note.id % NoteColors.length]}`}
         >
           <div className="flex flex-row justify-between gap-8 mb-4">
             <div className="flex flex-col gap-2">
@@ -89,6 +102,7 @@ export default function Note({selected, filter, reload, setReload}) {
           </div>
         </div>
       ))}
-    </>
+    </Masonry>
+    </div>
   );
 }
