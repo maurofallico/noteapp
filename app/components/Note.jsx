@@ -2,14 +2,15 @@
 
 import DeleteModal from "./DeleteModal";
 import EditModal from "./EditModal"
-import ArchiveNote from './ArchiveNote'
 import axios from 'axios'
 import Masonry from 'react-masonry-css'
-
-
+import { IoMdArchive } from "react-icons/io";
 import { useState, useEffect } from "react";
 
 export default function Note({selected, filter, reload, setReload}) {
+
+  const [loading, setLoading] = useState(false)
+  
 
   const breakpoints = {
     default: 3,
@@ -52,6 +53,7 @@ export default function Note({selected, filter, reload, setReload}) {
       const response = await axios.get(apiUrl);
       const data = await response.data
        data.sort((a, b) => a.id - b.id);
+
       setNotes(data);
     } catch (error) {
       console.log(error);
@@ -62,8 +64,29 @@ export default function Note({selected, filter, reload, setReload}) {
     fetchNotes();
   }, [selected, filter, reload])
 
-  const handleArchiveChange = async () => {
-    await fetchNotes();
+  const archiveFunction = async (noteId) => {
+    try {
+      setLoading((prevLoading) => ({
+        ...prevLoading,
+        [noteId]: true,
+      }));
+      const responseGet = await axios.get(`/api/notes/${noteId}`);
+      const archive = responseGet.data.archive;
+  
+      const updatedArchive = !archive;
+  
+      await axios.put(`/api/notes/${noteId}`, {
+        archive: updatedArchive,
+      });
+  
+      await fetchNotes()
+      setLoading((prevLoading) => ({
+        ...prevLoading,
+        [noteId]: false,
+      }));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -91,7 +114,8 @@ export default function Note({selected, filter, reload, setReload}) {
               <strong>{note.title}</strong>
             </p>
             <div className="flex gap-2 items-start text-xl">
-            <ArchiveNote noteId={note.id} selected={selected} onArchiveChange={handleArchiveChange} />
+            {loading[note.id]? (<span className="loading loading-spinner loading-sm"></span>) :
+            (<button title="Archive" onMouseOver={(e) => e.target.focus()} onClick={() => {archiveFunction(note.id)}}><IoMdArchive className={note.archive ? "text-green-500" : ""} /></button>)}
             <EditModal reload={reload} setReload={setReload} noteId={note.id}/>
             <DeleteModal reload={reload} setReload={setReload} noteId={note.id}  />
             </div>
