@@ -1,84 +1,69 @@
-'use client'
+"use client";
 
 import { useState, useEffect } from "react";
 import { CgClose } from "react-icons/cg";
+import axios from 'axios'
 /* import PropTypes from "prop-types"; */
 
 export default function SearchBar({ setFilters }) {
-  const [filter, setFilter] = useState();
   const [filters, setSearchFilters] = useState([]);
-  const [error, setError] = useState(false);
-  const [duplicate, setDuplicate] = useState(false);
+  const [selected, setSelected] = useState('null')
+  const [allFilters, setAllFilters] = useState([])
 
   async function addFilter() {
-    if (!filter) {
-      setError(true);
-    } else if (filters.includes(filter)) {
-      setDuplicate(true);
-    } else {
-      setDuplicate(false);
-      setSearchFilters((prevFilters) => [...prevFilters, filter]);
-      setFilters((prevFilters) => [...prevFilters, filter]);
-      setFilter("");
+    if (selected && !filters.includes(selected)) {
+      setSearchFilters((prevFilters) => [...prevFilters, selected]);
+      setFilters((prevFilters) => [...prevFilters, selected])
+      setAllFilters((prevFilters) => prevFilters.filter(filter => filter !== selected));
+      setSelected('null');
     }
   }
 
-  useEffect(() => {
-    setDuplicate(false)
-    if (filter) {
-      setError(false);
+  async function getFilters(){
+    try {
+      const response = await axios.get('/api/notes');
+      const data = response.data;
+      const newAllFilters = data.reduce((filters, note) => {
+        note.category.forEach((category) => {
+          if (!filters.includes(category)) {
+            filters.push(category);
+          }
+        });
+        return filters;
+      }, allFilters);
+  
+      setAllFilters(newAllFilters);
+    } catch (error) {
+        console.log(error)
     }
-  }, [filter]);
+  }
 
-  function removeFilter(index) {
+  useEffect(() => {  
+    getFilters()
+  }, []);
+
+  function removeFilter(fil, index) {
     const updatedFilters = [...filters];
     updatedFilters.splice(index, 1);
     setFilters(updatedFilters);
     setSearchFilters(updatedFilters);
+    setAllFilters((prevFilters) => [...prevFilters, fil])
   }
 
-  const handleEnter = (event) => {
-    if (event.key === "Enter") {
-      addFilter();
-    }
-  };
-
   return (
-    <div className="flex flex-col w-screen sm:px-64 justify-center items-center gap-0">
-      <div className="flex flex-col sm:flex-row gap-4 sm:gap-2">
-        <input
-          type="search"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          placeholder="Filter notes by up to 3 categories..."
-          disabled={filters.length >= 3}
-          onKeyDown={handleEnter}
-          className={`${
-            filters.length >= 3
-              ? "text-black bg-white border-2 border-slate-700 text-sm sm:text-xl px-2 sm:px-3 pb-0.5 placeholder:text-gray-400 rounded sm:rounded-lg w-64 sm:w-96 opacity-50"
-              : "text-black bg-white border-2 border-slate-700 text-sm sm:text-xl px-2 sm:px-3 pb-0.5 placeholder:text-gray-400 rounded sm:rounded-lg w-64 sm:w-96"
-          }`}
-        ></input>
-        <button
-          onClick={() => addFilter()}
-          disabled={filters.length >= 3}
-          className={`${
-            filters.length >= 3
-              ? "text-black text-xs border-black rounded-lg w-18 sm:w-20 self-center sm:h-7 h-6 sm:rounded-xl px-2 opacity-50"
-              : "text-black text-xs border border-black rounded-lg w-18 sm:w-20 self-center h-fit py-1.5 sm:rounded-lg px-2  bg-gray-100 hover:bg-gray-200"
-          }`}
-        >
-          Add Filter
-        </button>
+    <div className="flex w-screen sm:px-64 justify-center items-center gap-0">
+      <div className="flex flex-col justify-center items-center" >Filter by Categories 
+      <div className="flex flex-row gap-2 mt-2">
+      <select value={selected} onChange={(e) => setSelected(e.target.value)} className="border border-black flex items-center justify-center h-fit pb-0.5 w-32">
+        <option value="null" className='bg-gray-200 ' disabled="true"></option>
+      {allFilters?.map((filter, index) => ( 
+              
+              <option key={index}>{filter}</option>
+        ))}
+        </select>
+        <button onClick={() => addFilter()} className="text-gray-50 bg-slate-700 flex items-center justify-center border border-black rounded-md px-1.5 pb-0.5">Add Filter</button>
       </div>
-      {error ? (
-        <p className="mt-2 sm:text-md text-sm text-red-500">Filter can not be empty</p>
-      ) : duplicate ? (
-        <p className="mt-2 sm:text-md text-sm text-red-500">That filter is already applied</p>
-      ) : (
-        <div className="mt-8"></div>
-      )}
-      <div className="sm:text-base text-sm flex gap-3 sm:mt-3">
+      <div className="sm:text-base text-sm flex gap-3 mt-3">
         {filters?.length > 0 ? (
           filters?.map((fil, index) => (
             <div
@@ -89,7 +74,7 @@ export default function SearchBar({ setFilters }) {
               <button
                 className="flex self-center mt-[0.8px]"
                 onClick={() => {
-                  removeFilter(index);
+                  removeFilter(fil, index);
                 }}
               >
                 <CgClose className=" text-red-500 font-bold text-sm" />
@@ -102,11 +87,7 @@ export default function SearchBar({ setFilters }) {
           </div>
         )}
       </div>
+      </div>
     </div>
   );
 }
-
-/* SearchBar.propTypes = {
-  setFilters: PropTypes.any,
-};
- */

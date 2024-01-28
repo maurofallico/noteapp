@@ -54,19 +54,17 @@ export default function Note({selected, filter, reload, setReload}) {
       const response = await axios.get(apiUrl);
       const data = await response.data
        data.sort((a, b) => a.id - b.id);
-
-      setNotes(data);
+        
+      setNotes(data)
       setLoading(false)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   };
 
   useEffect(() => {
     fetchNotes();
   }, [selected, filter, reload])
-
-
 
   const archiveFunction = async (noteId) => {
     try {
