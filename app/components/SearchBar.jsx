@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { CgClose } from "react-icons/cg";
 import axios from 'axios'
-/* import PropTypes from "prop-types"; */
+
 
 export default function SearchBar({ setFilters }) {
   const [filters, setSearchFilters] = useState([]);
@@ -11,7 +11,7 @@ export default function SearchBar({ setFilters }) {
   const [allFilters, setAllFilters] = useState([])
 
   async function addFilter() {
-    if (selected && !filters.includes(selected)) {
+    if (selected && selected !== 'null' && !filters.includes(selected)) {
       setSearchFilters((prevFilters) => [...prevFilters, selected]);
       setFilters((prevFilters) => [...prevFilters, selected])
       setAllFilters((prevFilters) => prevFilters.filter(filter => filter !== selected));
@@ -19,9 +19,9 @@ export default function SearchBar({ setFilters }) {
     }
   }
 
-  async function getFilters(){
+  async function getFilters() {
     try {
-      const response = await axios.get('/api/notes');
+      const response = await axios.get('/api/notes', { params: { timestamp: new Date().getTime() } });
       const data = response.data;
       const newAllFilters = data.reduce((filters, note) => {
         note.category.forEach((category) => {
@@ -30,16 +30,18 @@ export default function SearchBar({ setFilters }) {
           }
         });
         return filters;
-      }, allFilters);
+      }, []);
   
       setAllFilters(newAllFilters);
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
   }
 
-  useEffect(() => {  
-    getFilters()
+ 
+  
+  useEffect(() => {
+    getFilters();
   }, []);
 
   function removeFilter(fil, index) {
