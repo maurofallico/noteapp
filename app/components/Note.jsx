@@ -100,7 +100,7 @@ export default function Note({selected, filter, reload, setReload}) {
         <span className="loading loading-spinner loading-lg scale-150"></span>
         </div>
       ) : (
-        <div className="w-screen flex flex-col sm:px-64 gap-y-8 sm:gap-y-4   ">
+        <div className="text-black w-screen flex flex-col sm:px-64 gap-y-8 sm:gap-y-4   ">
           <Masonry
             breakpointCols={breakpoints}
             className="my-masonry-grid"

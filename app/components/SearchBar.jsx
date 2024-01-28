@@ -55,8 +55,8 @@ export default function SearchBar({ setFilters }) {
           onKeyDown={handleEnter}
           className={`${
             filters.length >= 3
-              ? "bg-white border-2 border-slate-700 text-sm sm:text-xl px-2 sm:px-3 pb-0.5 placeholder:text-gray-400 rounded sm:rounded-lg w-64 sm:w-96 opacity-50"
-              : " bg-white border-2 border-slate-700 text-sm sm:text-xl px-2 sm:px-3 pb-0.5 placeholder:text-gray-400 rounded sm:rounded-lg w-64 sm:w-96"
+              ? "text-black bg-white border-2 border-slate-700 text-sm sm:text-xl px-2 sm:px-3 pb-0.5 placeholder:text-gray-400 rounded sm:rounded-lg w-64 sm:w-96 opacity-50"
+              : "text-black bg-white border-2 border-slate-700 text-sm sm:text-xl px-2 sm:px-3 pb-0.5 placeholder:text-gray-400 rounded sm:rounded-lg w-64 sm:w-96"
           }`}
         ></input>
         <button
@@ -64,8 +64,8 @@ export default function SearchBar({ setFilters }) {
           disabled={filters.length >= 3}
           className={`${
             filters.length >= 3
-              ? "text-xs border-black rounded-lg w-18 sm:w-20 self-center sm:h-7 h-6 sm:rounded-xl px-2 opacity-50"
-              : "text-xs border border-black rounded-lg w-18 sm:w-20 self-center h-fit py-1.5 sm:rounded-lg px-2  bg-gray-100 hover:bg-gray-200"
+              ? "text-black text-xs border-black rounded-lg w-18 sm:w-20 self-center sm:h-7 h-6 sm:rounded-xl px-2 opacity-50"
+              : "text-black text-xs border border-black rounded-lg w-18 sm:w-20 self-center h-fit py-1.5 sm:rounded-lg px-2  bg-gray-100 hover:bg-gray-200"
           }`}
         >
           Add Filter
