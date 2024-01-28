@@ -128,7 +128,7 @@ export default function EditModal({ noteId, reload, setReload }) {
                     name="title"
                     onChange={handleChange}
                     value={title}
-                    className="px-1 border rounded border-black w-64"
+                    className="bg-gray-50 px-1 border rounded border-black w-64"
                   ></input>
                 </div>
                 {titleError ? (
@@ -149,7 +149,7 @@ export default function EditModal({ noteId, reload, setReload }) {
                       name="category"
                       onChange={(e) => setCategory(e.target.value)}
                       value={category}
-                      className="px-1 border rounded border-black w-64"
+                      className="bg-gray-50 px-1 border rounded border-black w-64"
                       disabled={categoryList.length >= 3}
                     ></input>
                   </div>
@@ -211,7 +211,7 @@ export default function EditModal({ noteId, reload, setReload }) {
                       name="content"
                       onChange={handleChange}
                       value={content}
-                      className="px-1 border rounded border-black w-64 h-48"
+                      className="bg-gray-50 px-1 border rounded border-black w-64 h-48"
                     ></textarea>
                   </div>
                   {contentError ? (
