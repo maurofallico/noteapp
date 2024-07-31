@@ -54,16 +54,16 @@ export default function SearchBar({ setFilters }) {
 
   return (
     <div className="flex w-screen sm:px-64 justify-center items-center gap-0">
-      <div className="flex flex-col justify-center items-center" >Filter by Categories 
+      <div className="flex text-black flex-col justify-center items-center" >Filter by Categories 
       <div className="flex flex-row gap-2 mt-2">
-      <select value={selected} onChange={(e) => setSelected(e.target.value)} className="border border-black flex items-center justify-center h-fit pb-0.5 w-32">
+      <select value={selected} onChange={(e) => setSelected(e.target.value)} className="border bg-white flex items-center justify-center h-fit pb-0.5 w-32">
         <option value="null" className='bg-gray-200 ' disabled="true"></option>
       {allFilters?.map((filter, index) => ( 
               
               <option key={index}>{filter}</option>
         ))}
         </select>
-        <button onClick={() => addFilter()} className="text-gray-50 bg-slate-700 flex items-center justify-center border border-black rounded-md px-1.5 pb-0.5">Add Filter</button>
+        <button onClick={() => addFilter()} className="text-gray-50 bg-slate-500 flex items-center justify-center border border-black rounded-md px-1.5 pb-0.5">Add Filter</button>
       </div>
       <div className="sm:text-base text-sm flex gap-3 mt-3">
         {filters?.length > 0 ? (
