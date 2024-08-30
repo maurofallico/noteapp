@@ -5,7 +5,7 @@ import { CgClose } from "react-icons/cg";
 import axios from 'axios'
 
 
-export default function SearchBar({ setFilters }) {
+export default function SearchBar({ setFilters, reload }) {
   const [filters, setSearchFilters] = useState([]);
   const [selected, setSelected] = useState('null')
   const [allFilters, setAllFilters] = useState([])
@@ -42,7 +42,7 @@ export default function SearchBar({ setFilters }) {
   
   useEffect(() => {
     getFilters();
-  }, []);
+   }, [reload]);
 
   function removeFilter(fil, index) {
     const updatedFilters = [...filters];
