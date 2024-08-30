@@ -151,6 +151,8 @@ export default function Note({selected, filter, reload, setReload}) {
                         reload={reload}
                         setReload={setReload}
                         noteId={note.id}
+                        loading={loading}
+                        setLoading={setLoading}
                       />
                     </div>
                   </div>

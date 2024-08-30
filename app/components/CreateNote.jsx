@@ -13,6 +13,7 @@ export default function CreateNote({reload, setReload}) {
   const [titleError, setTitleError] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
   const [contentError, setContentError] = useState(false);
+  const [loading, setLoading] = useState(false)
   
 
   useEffect(() => {
@@ -60,6 +61,7 @@ export default function CreateNote({reload, setReload}) {
   async function onSubmit() {
     if (title && content) {
       try {
+        setLoading(true)
         await axios.post("/api/notes", {
             title: title,
             category: categoryList,
@@ -69,8 +71,9 @@ export default function CreateNote({reload, setReload}) {
         setCategory('')
         setCategoryList([])
         setContent('')
-        setIsOpen(false);
         setReload(!reload)
+        setLoading(false)
+        setIsOpen(false)
       } catch (error) {
         console.log(error);
       }
@@ -96,7 +99,9 @@ export default function CreateNote({reload, setReload}) {
       </button>
       {isOpen ? (
         <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
-          <div className="bg-blue-50 shadow-2xl border-2 border-slate-700 text-black py-2 sm:rounded-xl flex flex-col items-center gap-2 sm:w-[450px] w-screen h-[490px]">
+          {loading? (<div className="w-screen h-screen justify-center items-center flex">
+        <span className="loading loading-spinner loading-lg scale-150"></span>
+        </div>) : (<div className="bg-blue-50 shadow-2xl border-2 border-slate-700 text-black py-2 sm:rounded-xl flex flex-col items-center gap-2 sm:w-[450px] w-screen h-[490px]">
             <button
               onClick={() => cancelCreate()}
               className="flex self-end px-2"
@@ -197,7 +202,8 @@ export default function CreateNote({reload, setReload}) {
                 </button>
               </div>
             </div>
-          </div>
+          </div>)}
+          
         </div>
       ) : null}
     </>

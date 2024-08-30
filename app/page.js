@@ -19,7 +19,7 @@ export default function Home() {
      <div className='flex flex-col max-h-0'>
         <div className="flex flex-col gap-8 ">
       <NavBar setSelected={setSelected} selected={selected} reload={reload} setReload={setReload}/>
-      <SearchBar setFilters={setFilters} />
+      <SearchBar setFilters={setFilters} reload={reload} />
     </div>
     
     <div className='sm:w-fit sm:self-center sm:grid md:grid-cols-2 xl:grid-cols-3 mt-8 flex flex-col gap-x-4 gap-y-8 pb-16 '>

@@ -5,12 +5,13 @@ import { CgClose } from "react-icons/cg";
 import { useState } from 'react'
 import axios from 'axios'
 
-export default function DeleteModal({ noteId, reload, setReload }){
+export default function DeleteModal({ noteId, reload, setReload, loading, setLoading }){
 
     const [isOpen, setIsOpen] = useState(false)
 
     async function deleteNote(noteId) {
         try {
+          setLoading(true)
           await axios.delete(`/api/notes/${noteId}`);
           setIsOpen(false)
           setReload(!reload)
@@ -26,7 +27,9 @@ export default function DeleteModal({ noteId, reload, setReload }){
               <AiFillDelete />
             </button>
             {isOpen? (<div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
-            <div className="bg-blue-50 shadow-2xl border-2 border-slate-700 p-3 sm:rounded-xl flex flex-col items-center gap-2 w-screen sm:w-[460px] h-[140px]">
+              {loading? (<div className="w-screen h-screen justify-center items-center flex">
+        <span className="loading loading-spinner loading-lg scale-150"></span>
+        </div>) : (<div className="bg-blue-50 shadow-2xl border-2 border-slate-700 p-3 sm:rounded-xl flex flex-col items-center gap-2 w-screen sm:w-[460px] h-[140px]">
             <button onClick={() => setIsOpen(false)} className="flex self-end">
                 <CgClose className="hover:text-red-600 text-lg"/>
                 </button>
@@ -40,7 +43,7 @@ export default function DeleteModal({ noteId, reload, setReload }){
                 </button>
                 </div>
                 
-            </div>
+            </div>) }
             </div>) : (null)}
         </>
     )

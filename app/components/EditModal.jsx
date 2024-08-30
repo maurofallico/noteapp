@@ -14,6 +14,7 @@ export default function EditModal({ noteId, reload, setReload }) {
   const [titleError, setTitleError] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
   const [contentError, setContentError] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (title) setTitleError(false);
@@ -57,6 +58,7 @@ export default function EditModal({ noteId, reload, setReload }) {
     setIsOpen(true);
 
     try {
+      setLoading(true)
       const response = await axios.get(
         `/api/notes/${noteId}`
       );
@@ -67,6 +69,7 @@ export default function EditModal({ noteId, reload, setReload }) {
         ...data.category,
       ]);
       setContent(data.content);
+      setLoading(false)
     } catch (error) {
       console.log(error);
     }
@@ -80,17 +83,16 @@ export default function EditModal({ noteId, reload, setReload }) {
   async function onSubmit() {
     if (title && content) {
       try {
+        setLoading(true)
         await axios.put(`/api/notes/${noteId}`, {
           title: title,
           category: categoryList,
           content: content,
         })
-      /*setTitle('')
-        setCategory('')
-        setContent('') */
         setCategoryList([]);
         setIsOpen(false);
         setReload(!reload);
+        setLoading(false)
       } catch (error) {
         console.log(error);
       }
@@ -114,7 +116,9 @@ export default function EditModal({ noteId, reload, setReload }) {
       </button>
       {isOpen ? (
         <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
-          <div className="bg-blue-50 shadow-2xl border-2 border-slate-700 p-3 sm:rounded-xl flex flex-col items-center gap-2 w-screen sm:w-[450px] h-[490px]">
+          {loading? (<div className="w-screen h-screen justify-center items-center flex">
+        <span className="loading loading-spinner loading-lg scale-150"></span>
+        </div>) : (<div className="bg-blue-50 shadow-2xl border-2 border-slate-700 p-3 sm:rounded-xl flex flex-col items-center gap-2 w-screen sm:w-[450px] h-[490px]">
             <button onClick={() => cancelEdit()} className="flex self-end">
               <CgClose className="hover:text-red-600 text-lg" />
             </button>
@@ -234,7 +238,7 @@ export default function EditModal({ noteId, reload, setReload }) {
                 </div>
               </div>
             </div>
-          </div>
+          </div>)}
         </div>
       ) : null}
     </>
