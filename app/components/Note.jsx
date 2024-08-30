@@ -95,7 +95,7 @@ export default function Note({selected, filter, reload, setReload}) {
     <>
       {loading ? (
         <div className="w-screen h-screen justify-center items-start sm:mt-24 flex">
-        <span className="loading loading-spinner loading-lg scale-150"></span>
+        <span className="text-black loading loading-spinner loading-lg scale-150"></span>
         </div>
       ) : (
         <div className="text-black w-screen flex flex-col sm:px-64 gap-y-8 sm:gap-y-4   ">
@@ -128,7 +128,7 @@ export default function Note({selected, filter, reload, setReload}) {
                     </p>
                     <div className="flex gap-2 items-start text-xl">
                       {loadingArchive[note.id] ? (
-                        <span className="loading loading-spinner loading-sm"></span>
+                        <span className="text-black loading loading-spinner loading-sm"></span>
                       ) : (
                         <button
                           title="Archive"
