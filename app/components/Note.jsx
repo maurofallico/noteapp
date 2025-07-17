@@ -14,7 +14,7 @@ export default function Note({selected, filter, reload, setReload}) {
   
 
   const breakpoints = {
-    default: 3,
+    default: 2,
  
   }
   
