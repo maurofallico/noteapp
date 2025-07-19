@@ -99,10 +99,10 @@ export default function Note({selected, filter, reload, setReload}) {
         <span className="text-black loading loading-spinner loading-lg scale-150"></span>
         </div>
       ) : (
-        <div className="text-black w-screen flex flex-col items-center gap-y-8 sm:gap-y-4">
+        <div className="text-black w-screen flex flex-col gap-y-8 sm:gap-y-4">
           <Masonry
             breakpointCols={breakpoints}
-            className="my-masonry-grid xl:gap-x-8"
+            className="my-masonry-grid"
             columnClassName="my-masonry-grid_column"
           >
             {notes &&
@@ -110,7 +110,7 @@ export default function Note({selected, filter, reload, setReload}) {
               notes?.map((note, index) => (
                 <div
                   key={index}
-                  className={`sm:mb-0 mb-6 shadow-md sm:shadow-xl bg-gradient-to-r 2xl:w-[435px] xl:w-[380px] lg:w-[320px] md:w-[360px] sm:w-[280px] xs:w-[500px] text-sm sm:text-base xs:text-xl w-screen xs:h-[250px] sm:h-fit sm:rounded-2xl px-3 py-2  ${NoteColors[
+                  className={`sm:mb-0 mb-6 shadow-md sm:shadow-xl bg-gradient-to-r 2xl:w-[435px] xl:w-[400px] lg:w-[320px] md:w-[380px] sm:w-[300px] xs:w-[500px] text-sm sm:text-base xs:text-xl w-screen xs:h-[250px] sm:h-fit sm:rounded-2xl px-3 py-2  ${NoteColors[
                     note.id % NoteColors.length
                   ]}`}
                 >
