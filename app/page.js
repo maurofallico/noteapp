@@ -22,7 +22,7 @@ export default function Home() {
       <SearchBar setFilters={setFilters} reload={reload} />
     </div>
     
-    <div className='sm:w-fit sm:self-center sm:grid md:grid-cols-2 xl:grid-cols-3 mt-8 flex flex-col gap-x-4 gap-y-8 pb-16 '>
+    <div className='sm:w-fit sm:self-center mt-8 flex flex-col gap-x-4 gap-y-8 pb-16 '>
          <Note selected={selected} setSelected={setSelected} filter={filters} reload={reload} setReload={setReload} />
       </div>
 

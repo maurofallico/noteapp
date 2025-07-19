@@ -14,8 +14,9 @@ export default function Note({selected, filter, reload, setReload}) {
   
 
   const breakpoints = {
-    default: 2,
- 
+    default: 3,
+    1023: 2,
+    639: 1
   }
   
    const [notes, setNotes] = useState([""]); 
@@ -98,10 +99,10 @@ export default function Note({selected, filter, reload, setReload}) {
         <span className="text-black loading loading-spinner loading-lg scale-150"></span>
         </div>
       ) : (
-        <div className="text-black w-screen flex flex-col sm:px-64 gap-y-8 sm:gap-y-4   ">
+        <div className="text-black w-screen flex flex-col items-center gap-y-8 sm:gap-y-4">
           <Masonry
             breakpointCols={breakpoints}
-            className="my-masonry-grid"
+            className="my-masonry-grid xl:gap-x-8"
             columnClassName="my-masonry-grid_column"
           >
             {notes &&
@@ -109,7 +110,7 @@ export default function Note({selected, filter, reload, setReload}) {
               notes?.map((note, index) => (
                 <div
                   key={index}
-                  className={` sm:mb-0 mb-6 shadow-md sm:shadow-xl bg-gradient-to-r 2xl:w-[450px] lg:w-[420px] md:w-[380px] text-sm sm:text-base w-screen sm:h-fit sm:rounded-2xl px-3 py-2  ${NoteColors[
+                  className={`sm:mb-0 mb-6 shadow-md sm:shadow-xl bg-gradient-to-r 2xl:w-[435px] xl:w-[380px] lg:w-[320px] md:w-[360px] sm:w-[280px] xs:w-[500px] text-sm sm:text-base xs:text-xl w-screen xs:h-[250px] sm:h-fit sm:rounded-2xl px-3 py-2  ${NoteColors[
                     note.id % NoteColors.length
                   ]}`}
                 >
@@ -123,10 +124,10 @@ export default function Note({selected, filter, reload, setReload}) {
                         </div>
                       ))}
                     </div>
-                    <p className="text-lg text-center h-fit">
+                    <p className="text-lg xs:text-xl text-center h-fit">
                       <strong>{note.title}</strong>
                     </p>
-                    <div className="flex gap-2 items-start text-xl">
+                    <div className="flex gap-2 items-start text-xl xs:text-2xl">
                       {loadingArchive[note.id] ? (
                         <span className="text-black loading loading-spinner loading-sm"></span>
                       ) : (
