@@ -1,10 +1,13 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("POSTGRES_URL_NON_POOLING")
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  schemas  = ["test"]
 }
 
 model Note {
@@ -12,5 +15,7 @@ model Note {
   title    String
   category String[]
   content  String
-  archive  Boolean  @default(false)
+  status   String
+
+  @@schema("test")
 }

@@ -57,7 +57,7 @@ export default function SearchBar({ setFilters, reload }) {
       <div className="flex text-black flex-col justify-center items-center" >Filter by Categories 
       <div className="flex flex-row gap-2 mt-2">
       <select value={selected} onChange={(e) => setSelected(e.target.value)} className="border bg-white flex items-center justify-center h-fit pb-0.5 w-32">
-        <option value="null" className='bg-gray-200 ' disabled="true"></option>
+        <option value="null" className='bg-gray-200 ' disabled={true}></option>
       {allFilters?.map((filter, index) => ( 
               
               <option key={index}>{filter}</option>
