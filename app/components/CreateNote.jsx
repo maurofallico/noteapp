@@ -66,6 +66,7 @@ export default function CreateNote({reload, setReload}) {
             title: title,
             category: categoryList,
             content: content,
+            status: 'todo'
         });
         setTitle('')
         setCategory('')
