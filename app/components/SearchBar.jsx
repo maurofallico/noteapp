@@ -41,7 +41,7 @@ export default function SearchBar({ setFilters, reload }) {
  
   
   useEffect(() => {
-    getFilters();
+    //getFilters();
    }, [reload]);
 
   function removeFilter(fil, index) {

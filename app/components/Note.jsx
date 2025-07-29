@@ -23,7 +23,7 @@ export default function Note({ note, onDragStart, selected, filter, reload, setR
   ];
 
   useEffect(() => {
-    console.log(note);
+    //console.log(note);
   }, []);
 
   return (

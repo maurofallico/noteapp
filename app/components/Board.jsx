@@ -41,8 +41,9 @@ export default function Board ({ notes }) {
     const destItems = [...destCol.items];
     const [movedItem] = sourceItems.splice(source.index, 1);
 
-    // Opcional: actualizá el estado de la nota (cambia el `estado`)
-    movedItem.estado = destination.droppableId;
+    //hacer axios.update acá
+    const note = notes.find(note => note.id === movedItem.id);
+    note.status = destination.droppableId;
 
     if (source.droppableId === destination.droppableId) {
       sourceItems.splice(destination.index, 0, movedItem);
@@ -70,38 +71,47 @@ export default function Board ({ notes }) {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div className="flex gap-4 text-black w-screen justify-evenly">
-        {Object.entries(columns).map(([columnId, column]) => (
-          <Droppable key={columnId} droppableId={columnId}>
-            {(provided) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                className="bg-white flex flex-col items-center w-[400px] border border-black p-4 rounded-md min-h-[200px]"
-              >
-                <h2 className="font-bold text-lg mb-2">{column.name}</h2>
-                <div className="flex flex-col gap-2">
-                  {column.items?.map((note, index) => (
-                    <Draggable key={note.id.toString()} draggableId={note.id.toString()} index={index}>
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <Note note={note} />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              </div>
-            )}
-          </Droppable>
-        ))}
-      </div>
-    </DragDropContext>
-  );
+<DragDropContext onDragEnd={onDragEnd}>
+  <div className="flex gap-4 text-black w-screen justify-evenly">
+    {Object.entries(columns).map(([columnId, column]) => (
+      <Droppable key={columnId} droppableId={columnId}>
+        {(provided) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className="bg-white flex flex-col items-center w-[400px] border border-black p-4 rounded-md min-h-[200px]"
+          >
+            {/* El título NO está dentro del área que recibe los ítems */}
+            <h2 className="font-bold text-lg mb-2 pointer-events-none select-none">
+              {column.name}
+            </h2>
+
+            {/* Este div SÍ es la zona donde se insertan ítems */}
+            <div className="flex flex-col gap-2 w-full">
+              {column.items?.map((note, index) => (
+                <Draggable
+                  key={note.id.toString()}
+                  draggableId={note.id.toString()}
+                  index={index}
+                >
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <Note note={note} />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          </div>
+        )}
+      </Droppable>
+    ))}
+  </div>
+</DragDropContext>
+);
 }
