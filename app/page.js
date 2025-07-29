@@ -12,6 +12,32 @@ export default function Home() {
   const [reload, setReload] = useState(false);
   const [notes, setNotes] = useState([]);
 
+  const mockNotes = [
+    {
+    id: 1,
+    title: "testMock1",
+    content: "This is a test",
+    status: "todo"
+    },
+    {
+    id: 2,
+    title: "testMock2",
+    content: "This is another test",
+    status: "todo"
+    },
+    {
+    id: 3,
+    title: "testMock3",
+    content: "This is the final test",
+    status: "todo"
+    },
+
+  ]
+
+  async function fetchMockNotes() {
+    setNotes(mockNotes);
+  }
+
   async function fetchNotes () {
     try {
       let apiUrl = "/api/notes";
@@ -39,7 +65,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchNotes();
+    //fetchNotes();
+    fetchMockNotes();
   }, []);
 
   return (
