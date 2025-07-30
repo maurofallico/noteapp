@@ -4,8 +4,7 @@ import DeleteModal from "./DeleteModal";
 import EditModal from "./EditModal";
 import { useState, useEffect, useRef } from "react";
 
-export default function Note({ note, onDragStart, selected, filter, reload, setReload }) {
-  const [loading, setLoading] = useState(true);
+export default function Note({ note, onDragStart, selected, filter, reload, setReload, loading, setLoading }) {
 
   const nodeRef = useRef(null)
   

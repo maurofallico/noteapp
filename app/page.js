@@ -11,6 +11,7 @@ export default function Home() {
   const [filters, setFilters] = useState([]);
   const [reload, setReload] = useState(false);
   const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const mockNotes = [
     {
@@ -58,16 +59,17 @@ export default function Home() {
       data.sort((a, b) => a.id - b.id);
 
       setNotes(data);
-      //setLoading(false);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    //fetchNotes();
-    fetchMockNotes();
-  }, []);
+    fetchNotes();
+    console.log('reloading')
+    //fetchMockNotes();
+  }, [reload]);
 
   return (
     <div className="overflow-x-hidden bg-gray-50 h-fit">
@@ -83,9 +85,8 @@ export default function Home() {
         </div>
 
         <div className="sm:w-fit sm:self-center sm:grid md:grid-cols-2 xl:grid-cols-3 mt-8 flex flex-col gap-x-4 gap-y-8 pb-16 ">
-          {/* <Note selected={selected} setSelected={setSelected} filter={filters} reload={reload} setReload={setReload} /> */}
           <Board
-            notes={notes}
+            notes={notes} reload={reload} setReload={setReload} loading={loading} setLoading={setLoading}
           />
         </div>
       </div>
