@@ -5,7 +5,7 @@ import Note from './Note'
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import axios from 'axios';
 
-export default function Board ({ notes, reload, setReload, loading, setLoading }) {
+export default function Board ({ notes, setNotes, reload, setReload, loading, setLoading }) {
 
   const [columns, setColumns] = useState({
     todo: {
@@ -42,15 +42,12 @@ export default function Board ({ notes, reload, setReload, loading, setLoading }
     const destItems = [...destCol.items];
     const [movedItem] = sourceItems.splice(source.index, 1);
 
-    const note = notes.find(note => note.id === movedItem.id);
+    const note = notes.find(note => note.id === movedItem.id);  
 
-    //hacer axios.update acá
-
-    axios.put(`/api/notes/${note.id}`, {
-      status: destination.droppableId
-    })
-
-    //note.status = destination.droppableId;
+    process.env.NEXT_PUBLIC_AMBIENT_GCBA === "true" ? note.status = destination.droppableId
+      : axios.put(`/api/notes/${note.id}`, {
+          status: destination.droppableId
+        })
 
     if (source.droppableId === destination.droppableId) {
       sourceItems.splice(destination.index, 0, movedItem);
@@ -115,7 +112,7 @@ export default function Board ({ notes, reload, setReload, loading, setLoading }
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <Note note={note} reload={reload} setReload={setReload} loading={loading} setLoading={setLoading} />
+                      <Note note={note} notes={notes} setNotes={setNotes} reload={reload} setReload={setReload} loading={loading} setLoading={setLoading} />
                     </div>
                   )}
                 </Draggable>

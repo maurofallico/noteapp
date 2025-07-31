@@ -5,20 +5,28 @@ import { CgClose } from "react-icons/cg";
 import { useState } from 'react'
 import axios from 'axios'
 
-export default function DeleteModal({ noteId, reload, setReload, loading, setLoading }){
+export default function DeleteModal({ note, setNotes, reload, setReload, loading, setLoading }){
 
     const [isOpen, setIsOpen] = useState(false)
 
-    async function deleteNote(noteId) {
+    async function deleteNote(id) {
+      if (process.env.NEXT_PUBLIC_AMBIENT_GCBA === "false") {
         try {
           setLoading(true)
-          await axios.delete(`/api/notes/${noteId}`);
+          await axios.delete(`/api/notes/${id}`);
           setIsOpen(false)
           setReload(!reload)
         } catch (error) {
           console.log(error);
         }
       }
+      else{
+        setNotes((prevNotes) =>
+          prevNotes.filter((n) => n.id !== note.id)
+        );
+        setIsOpen(false)
+      }
+    }
  
     
     return(
@@ -35,7 +43,7 @@ export default function DeleteModal({ noteId, reload, setReload, loading, setLoa
                 </button>
                 <p className='sm:text-lg text-sm'>Are you sure you want to delete this note?</p>
                 <div className="sm:text-lg text-sm flex gap-8 mt-2 sm:mt-3">
-                <button onClick={() => deleteNote(noteId)} className="border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-0.5 self-center mt-1">
+                <button onClick={() => deleteNote(note.id)} className="border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-0.5 self-center mt-1">
                     Yes
                 </button>
                 <button onClick={() => setIsOpen(false)} className="border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-0.5 self-center mt-1">

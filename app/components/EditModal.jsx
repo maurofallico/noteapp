@@ -5,7 +5,7 @@ import { CgClose } from "react-icons/cg";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function EditModal({ noteId, reload, setReload }) {
+export default function EditModal({ note, setNotes, reload, setReload }) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
@@ -54,24 +54,33 @@ export default function EditModal({ noteId, reload, setReload }) {
     }
   }
 
-  const handleEdit = async (noteId) => {
+  const handleEdit = async (id) => {
     setIsOpen(true);
-
-    try {
-      setLoading(true)
-      const response = await axios.get(
-        `/api/notes/${noteId}`
-      );
-      const data = await response.data;
-      setTitle(data.title);
+    if (process.env.NEXT_PUBLIC_AMBIENT_GCBA === "false"){
+      try {
+        setLoading(true)
+        const response = await axios.get(
+          `/api/notes/${id}`
+        );
+        const data = await response.data;
+        setTitle(data.title);
+        setCategoryList((prevCategoryList) => [
+          ...prevCategoryList,
+          ...data.category,
+        ]);
+        setContent(data.content);
+        setLoading(false)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    else{
+      setTitle(note.title);
       setCategoryList((prevCategoryList) => [
         ...prevCategoryList,
-        ...data.category,
+        ...note.category
       ]);
-      setContent(data.content);
-      setLoading(false)
-    } catch (error) {
-      console.log(error);
+      setContent(note.content);
     }
   };
 
@@ -82,20 +91,39 @@ export default function EditModal({ noteId, reload, setReload }) {
 
   async function onSubmit() {
     if (title && content) {
-      try {
-        setLoading(true)
-        await axios.put(`/api/notes/${noteId}`, {
-          title: title,
-          category: categoryList,
-          content: content,
-        })
+      if (process.env.NEXT_PUBLIC_AMBIENT_GCBA === "false"){
+        try {
+          setLoading(true)
+          await axios.put(`/api/notes/${note.id}`, {
+            title: title,
+            category: categoryList,
+            content: content,
+          })
+          setCategoryList([]);
+          setIsOpen(false);
+          setReload(!reload);
+          setLoading(false)
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      else{
+        setNotes((prevNotes) =>
+          prevNotes.map((n) =>
+            n.id === note.id
+              ? {
+                  ...n,
+                  title: title,
+                  category: categoryList,
+                  content: content
+                }
+              : n
+          )
+        );
         setCategoryList([]);
         setIsOpen(false);
-        setReload(!reload);
-        setLoading(false)
-      } catch (error) {
-        console.log(error);
       }
+      
     }
     if (!title) {
       setTitleError(true);
@@ -111,7 +139,7 @@ export default function EditModal({ noteId, reload, setReload }) {
 
   return (
     <>
-      <button title="Edit" onMouseOver={(e) => e.target.focus()} onClick={() => handleEdit(noteId)} className="h-fit">
+      <button title="Edit" onMouseOver={(e) => e.target.focus()} onClick={() => handleEdit(note.id)} className="h-fit">
         <FaRegEdit />
       </button>
       {isOpen ? (

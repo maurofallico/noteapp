@@ -4,7 +4,7 @@ import DeleteModal from "./DeleteModal";
 import EditModal from "./EditModal";
 import { useState, useEffect, useRef } from "react";
 
-export default function Note({ note, onDragStart, selected, filter, reload, setReload, loading, setLoading }) {
+export default function Note({ gcba, note, notes, setNotes, onDragStart, selected, filter, reload, setReload, loading, setLoading }) {
 
   const nodeRef = useRef(null)
   
@@ -48,12 +48,14 @@ export default function Note({ note, onDragStart, selected, filter, reload, setR
                 <EditModal
                   reload={reload}
                   setReload={setReload}
-                  noteId={note.id}
+                  note={note}
+                  setNotes={setNotes}
                 />
                 <DeleteModal
                   reload={reload}
                   setReload={setReload}
-                  noteId={note.id}
+                  note={note}
+                  setNotes={setNotes}
                   loading={loading}
                   setLoading={setLoading}
                 />
