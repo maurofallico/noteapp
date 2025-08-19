@@ -96,10 +96,10 @@ export default function Board ({ notes, setNotes, reload, setReload, loading, se
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className="bg-white flex flex-col items-center w-[400px] border border-black p-4 rounded-md min-h-[200px]"
+            className="flex flex-col items-center w-[400px] p-4 rounded-md min-h-[200px]"
           >
 
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full gap-4">
               {column.items?.map((note, index) => (
                 <Draggable
                   key={note.id.toString()}
