@@ -12,36 +12,11 @@ export default function Home() {
   const [filters, setFilters] = useState([]);
   const [reload, setReload] = useState(false);
   const [notes, setNotes] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const mockNotes = [
-    {
-    id: 1,
-    title: "testMock1",
-    category: ["test1"],
-    content: "This is a test",
-    status: "todo"
-    },
-    {
-    id: 2,
-    title: "testMock2",
-    category: ["test2"],
-    content: "This is another test",
-    status: "todo"
-    },
-    {
-    id: 3,
-    title: "testMock3",
-    category: ["test3"],
-    content: "This is the final test",
-    status: "todo"
-    },
-
-  ]
-
-  async function fetchMockNotes() {
-    setNotes(mockNotes);
-  }
+  useEffect(() => {
+    fetchNotes();
+  }, [reload])
 
   async function fetchNotes () {
     try {
@@ -69,12 +44,8 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    process.env.NEXT_PUBLIC_AMBIENT_GCBA === "true" ? fetchMockNotes() : fetchNotes()
-  }, [reload]);
-
   return (
-    <div className="overflow-x-hidden bg-gray-50 h-fit">
+    <div className="overflow-x-hidden bg-gray-300 h-fit">
       <div className="flex flex-col max-h-0">
         <div className="flex flex-col gap-8 ">
           <NavBar
