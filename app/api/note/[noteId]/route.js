@@ -4,13 +4,13 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function GET(request, { params }) {
-  const { notesId } = params;
+  const { noteId } = params;
 
   try {
-    if (notesId) {
+    if (noteId) {
       const result = await prisma.note.findUnique({
         where: {
-          id: Number(notesId),
+          id: Number(noteId),
         },
       });
       return NextResponse.json(result, { status: 200 });
@@ -23,10 +23,10 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
-    const { notesId } = params;
+    const { noteId } = params;
 
     await prisma.note.update({
-      where: {id: Number(notesId)},
+      where: {id: Number(noteId)},
       data: data,
     });
     return NextResponse.json("note updated!");
@@ -38,10 +38,10 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
     try {
-      const { notesId } = params;
+      const { noteId } = params;
   
       await prisma.note.delete({
-        where: {id: Number(notesId)},
+        where: {id: Number(noteId)},
       });
       return NextResponse.json("note deleted!");
     } catch (error) {

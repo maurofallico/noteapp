@@ -11,11 +11,18 @@ datasource db {
 }
 
 model Note {
-  id       Int      @id @default(autoincrement())
-  title    String
-  category String[]
-  content  String
-  status   String
+  id        Int      @id @default(autoincrement())
+  title     String
+  category  String[]
+  content   String
+  statusID  Int
+  status    List     @relation(fields: [statusID], references: [id])
+  @@schema("test")
+}
 
+model List {
+  id       Int      @id @default(autoincrement())
+  name     String
+  notes    Note[]
   @@schema("test")
 }

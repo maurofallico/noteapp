@@ -33,7 +33,7 @@ export default function Note({ note, notes, setNotes, onDragStart, selected, fil
   return (
     <>
         <div onClick={(e) => openEditModal(e)} ref={nodeRef}
-          className="sm:mb-0 mb-6 shadow-md sm:shadow-xl text-gray-200 bg-gradient-to-r w-fit text-sm sm:text-base sm:h-fit sm:rounded-2xl px-3 py-2 bg-gray-700 cursor-pointer"
+          className="transition-all duration-200 ease-in-out border-2 border-gray-700 hover:border-2 hover:border-white sm:mb-0 mb-6 shadow-md sm:shadow-xl text-gray-200 bg-gradient-to-r w-fit text-sm sm:text-base sm:h-fit sm:rounded-2xl px-3 py-2 bg-gray-700 cursor-pointer"
         >
           <div className="flex flex-row mb-4">
             <div className="flex items-start flex-row w-[283px] gap-8">

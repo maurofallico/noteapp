@@ -13,7 +13,7 @@ const DeleteModal = forwardRef(({ note, reload, setReload, loading, setLoading }
     async function deleteNote(id) {
         try {
           setLoading(true)
-          await axios.delete(`/api/notes/${id}`);
+          await axios.delete(`/api/note/${id}`);
           setIsOpen(false)
           setReload(!reload)
         } catch (error) {
@@ -24,7 +24,7 @@ const DeleteModal = forwardRef(({ note, reload, setReload, loading, setLoading }
     
     return(
         <>
-            <button ref={ref} title="Delete" onMouseOver={(e) => e.target.focus()} onClick={() => setIsOpen(true)} className="h-fit">
+            <button ref={ref} title="Delete" onMouseOver={(e) => e.target.focus()} onClick={() => setIsOpen(true)} className="transition-all duration-200 ease-in-out h-fit hover:text-gray-300 hover:scale-125">
               <AiFillDelete />
             </button>
             {isOpen? (<div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">

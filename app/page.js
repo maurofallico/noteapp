@@ -11,16 +11,20 @@ export default function Home() {
   const [selected, setSelected] = useState("active");
   const [filters, setFilters] = useState([]);
   const [reload, setReload] = useState(false);
+
   const [notes, setNotes] = useState([]);
+  const [lists, setLists] = useState([]);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchNotes();
+    fetchLists();
   }, [reload])
 
   async function fetchNotes () {
     try {
-      let apiUrl = "/api/notes";
+      let apiUrl = "/api/note";
 
       const queryParams = new URLSearchParams();
 
@@ -44,6 +48,19 @@ export default function Home() {
     }
   };
 
+  async function fetchLists () {
+    try {
+      let apiUrl = "/api/list";
+      const response = await axios.get(apiUrl);
+      const data = await response.data;
+      data.sort((a, b) => a.id - b.id);
+      setLists(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="overflow-x-hidden bg-gray-300 h-fit">
       <div className="flex flex-col max-h-0">
@@ -54,12 +71,12 @@ export default function Home() {
             reload={reload}
             setReload={setReload}
           />
-          <SearchBar setFilters={setFilters} reload={reload} />
+          {/* <SearchBar setFilters={setFilters} reload={reload} /> */}
         </div>
 
         <div className="sm:w-fit sm:self-center sm:grid md:grid-cols-2 xl:grid-cols-3 mt-8 flex flex-col gap-x-4 gap-y-8 pb-16 ">
           <Board
-            notes={notes} setNotes={setNotes} reload={reload} setReload={setReload} loading={loading} setLoading={setLoading}
+            notes={notes} setNotes={setNotes} lists={lists} setLists={setLists} reload={reload} setReload={setReload} loading={loading} setLoading={setLoading}
           />
         </div>
       </div>
