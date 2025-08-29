@@ -7,37 +7,16 @@ import { useState, useEffect } from "react";
 import axios from 'axios';
 
 export default function Home() {
+
   const [selected, setSelected] = useState("active");
   const [filters, setFilters] = useState([]);
   const [reload, setReload] = useState(false);
   const [notes, setNotes] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const mockNotes = [
-    {
-    id: 1,
-    title: "testMock1",
-    content: "This is a test",
-    status: "todo"
-    },
-    {
-    id: 2,
-    title: "testMock2",
-    content: "This is another test",
-    status: "todo"
-    },
-    {
-    id: 3,
-    title: "testMock3",
-    content: "This is the final test",
-    status: "todo"
-    },
-
-  ]
-
-  async function fetchMockNotes() {
-    setNotes(mockNotes);
-  }
+  useEffect(() => {
+    fetchNotes();
+  }, [reload])
 
   async function fetchNotes () {
     try {
@@ -65,14 +44,8 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    fetchNotes();
-    console.log('reloading')
-    //fetchMockNotes();
-  }, [reload]);
-
   return (
-    <div className="overflow-x-hidden bg-gray-50 h-fit">
+    <div className="overflow-x-hidden bg-gray-300 h-fit">
       <div className="flex flex-col max-h-0">
         <div className="flex flex-col gap-8 ">
           <NavBar
@@ -86,7 +59,7 @@ export default function Home() {
 
         <div className="sm:w-fit sm:self-center sm:grid md:grid-cols-2 xl:grid-cols-3 mt-8 flex flex-col gap-x-4 gap-y-8 pb-16 ">
           <Board
-            notes={notes} reload={reload} setReload={setReload} loading={loading} setLoading={setLoading}
+            notes={notes} setNotes={setNotes} reload={reload} setReload={setReload} loading={loading} setLoading={setLoading}
           />
         </div>
       </div>

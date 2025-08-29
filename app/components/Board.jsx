@@ -5,7 +5,10 @@ import Note from './Note'
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import axios from 'axios';
 
-export default function Board ({ notes, reload, setReload, loading, setLoading }) {
+export default function Board({ notes, setNotes, reload, setReload, loading, setLoading }) {
+
+  const [creatingNote, setCreatingNote] = useState(null);
+  const [newNoteText, setNewNoteText] = useState("");
 
   const [columns, setColumns] = useState({
     todo: {
@@ -31,7 +34,7 @@ export default function Board ({ notes, reload, setReload, loading, setLoading }
     setColumns(updatedColumns);
   }, [notes]);
 
-  function onDragEnd (result) {
+  function onDragEnd(result) {
     const { source, destination } = result;
 
     if (!destination) return;
@@ -44,13 +47,9 @@ export default function Board ({ notes, reload, setReload, loading, setLoading }
 
     const note = notes.find(note => note.id === movedItem.id);
 
-    //hacer axios.update acá
-
-    axios.put(`/api/notes/${note.id}`, {
+    note.status = axios.put(`/api/notes/${note.id}`, {
       status: destination.droppableId
     })
-
-    //note.status = destination.droppableId;
 
     if (source.droppableId === destination.droppableId) {
       sourceItems.splice(destination.index, 0, movedItem);
@@ -77,58 +76,122 @@ export default function Board ({ notes, reload, setReload, loading, setLoading }
     }
   };
 
+  function createNote(columnID) {
+    console.log('columnID: ', columnID)
+    setCreatingNote(columnID);
+  }
+
+  async function confirmCreateNote(columnID) {
+    if (!newNoteText.trim()) return;
+
+    try {
+      const response = await axios.post("/api/notes", {
+        title: newNoteText,
+        category: [],
+        content: "",
+        status: columnID,
+      });
+
+      const newNote = {
+        id: response.data.id,
+        title: newNoteText,
+        category: [],
+        content: "",
+        status: columnID,
+      };
+
+      // Actualizar localmente
+
+      setColumns((prev) => ({
+        ...prev,
+        [columnID]: {
+          ...prev[columnID],
+          items: [...prev[columnID].items, newNote],
+        },
+      }));
+
+      setNewNoteText("");
+      setCreatingNote(null);
+    } catch (err) {
+      console.error("Error creando nota:", err);
+    }
+  }
+
   return (
-<DragDropContext onDragEnd={onDragEnd}>
+    <>
+      {!loading ? (<DragDropContext onDragEnd={onDragEnd}>
 
-  <div className="flex gap-4 text-black w-screen justify-evenly flex-col">
-    <div className="flex flex-row justify-around">
-      <h2 className="text-center w-[400px] font-bold text-lg pointer-events-none select-none">
-        To Do
-      </h2>
-      <h2 className="text-center w-[400px] font-bold text-lg pointer-events-none select-none">
-        In Progress
-      </h2>
-      <h2 className="text-center w-[400px] font-bold text-lg pointer-events-none select-none">
-        Finished
-      </h2>
-    </div>
-    <div className="flex flex-row justify-around">
-    {Object.entries(columns).map(([columnId, column]) => (
-      <Droppable key={columnId} droppableId={columnId}>
-        {(provided) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-            className="bg-white flex flex-col items-center w-[400px] border border-black p-4 rounded-md min-h-[200px]"
-          >
-
-            <div className="flex flex-col w-full">
-              {column.items?.map((note, index) => (
-                <Draggable
-                  key={note.id.toString()}
-                  draggableId={note.id.toString()}
-                  index={index}
-                >
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      <Note note={note} reload={reload} setReload={setReload} loading={loading} setLoading={setLoading} />
+        <div className="flex gap-4 text-black w-screen justify-evenly flex-col">
+          <div className="flex flex-row justify-start gap-4 px-6">
+            {Object.entries(columns).map(([columnId, column]) => (
+              <Droppable key={columnId} droppableId={columnId}>
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className="bg-black flex flex-col items-center w-[320px] py-2 px-4 rounded-xl h-fit gap-4 "
+                  >
+                    <span className="text-gray-200">
+                      {column.name}
+                    </span>
+                    <div className="flex flex-col gap-4 w-full">
+                      <div className="flex flex-col w-full gap-2">
+                        {column.items?.map((note, index) => (
+                          <Draggable
+                            key={note.id.toString()}
+                            draggableId={note.id.toString()}
+                            index={index}
+                          >
+                            {(provided) => (
+                              <div className="flex justify-center"
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              >
+                                <Note note={note} notes={notes} setNotes={setNotes} reload={reload} setReload={setReload} loading={loading} setLoading={setLoading} />
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                      {creatingNote === columnId ? (
+                        <div className="bg-gray-800 p-2 rounded-lg flex flex-col gap-2">
+                          <input
+                            type="text"
+                            placeholder="New task..."
+                            className="px-2 py-1 rounded-md text-white"
+                            value={newNoteText}
+                            onChange={(e) => setNewNoteText(e.target.value)}
+                          />
+                          <div className="flex gap-2">
+                            <button
+                              className="bg-green-600 px-2 py-1 rounded-md text-white"
+                              onClick={() => confirmCreateNote(columnId)}
+                            >
+                              Create
+                            </button>
+                            <button
+                              className="bg-red-600 px-2 py-1 rounded-md text-white"
+                              onClick={() => setCreatingNote(null)}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button onClick={() => createNote(columnId)} className="px-2 text-start text-gray-200 w-full rounded-lg pb-2 pt-1 hover:bg-gray-900">+ Add task</button>
+                      )}
                     </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          </div>
-        )}
-      </Droppable>
-    ))}
+                  </div>
+                )}
+              </Droppable>
+            ))}
 
-    </div>
-  </div>
-</DragDropContext>
-);
+          </div>
+        </div>
+      </DragDropContext>) : (null)}
+
+    </>
+  );
 }

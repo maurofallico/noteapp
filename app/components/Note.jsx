@@ -4,9 +4,12 @@ import DeleteModal from "./DeleteModal";
 import EditModal from "./EditModal";
 import { useState, useEffect, useRef } from "react";
 
-export default function Note({ note, onDragStart, selected, filter, reload, setReload, loading, setLoading }) {
+export default function Note({ note, notes, setNotes, onDragStart, selected, filter, reload, setReload, loading, setLoading }) {
 
   const nodeRef = useRef(null)
+  const deleteRef = useRef(null)
+
+  const [editOpen, setEditOpen] = useState(false);
   
   const NoteColors = [
     "from-blue-200 to-blue-100",
@@ -21,39 +24,44 @@ export default function Note({ note, onDragStart, selected, filter, reload, setR
     "from-orange-200 to-orange-100",
   ];
 
-  useEffect(() => {
-    //console.log(note);
-  }, []);
+  function openEditModal(e) {
+    if (deleteRef.current && !deleteRef.current.contains(e.target)) {
+      setEditOpen(true);
+    }
+  }
 
   return (
     <>
-        <div ref={nodeRef}
-          className={`sm:mb-0 mb-6 shadow-md sm:shadow-xl text-black bg-gradient-to-r w-[375px] text-sm sm:text-base sm:h-fit sm:rounded-2xl px-3 py-2  ${
-            NoteColors[note.id % NoteColors.length]
-          }`}
+        <div onClick={(e) => openEditModal(e)} ref={nodeRef}
+          className="sm:mb-0 mb-6 shadow-md sm:shadow-xl text-gray-200 bg-gradient-to-r w-fit text-sm sm:text-base sm:h-fit sm:rounded-2xl px-3 py-2 bg-gray-700 cursor-pointer"
         >
           <div className="flex flex-row mb-4">
-            <div className="flex flex-row w-screen justify-around">
+            <div className="flex items-start flex-row w-[283px] gap-8">
               {note.category?.map((cat, index) => (
                 <div key={index} className="flex">
-                  <p className="bg-yellow-100 px-2 border border-black border-opacity-20 rounded-lg">
+                  <p className="bg-gray-400 text-black px-2 border border-black border-opacity-20 rounded-lg">
                     #{cat}
                   </p>
                 </div>
               ))}
-              <p className="text-lg text-center h-fit">
+              <p className="text-lg w-[200px] break-words">
                 <strong>{note.title}</strong>
               </p>
-              <div className="text-lg">            
+              <div className="flex items-center py-1 w-full place-content-end text-lg gap-1">            
                 <EditModal
                   reload={reload}
                   setReload={setReload}
-                  noteId={note.id}
+                  note={note}
+                  setNotes={setNotes}
+                  isOpen={editOpen}
+                  setIsOpen={setEditOpen}
                 />
                 <DeleteModal
+                  ref={deleteRef}
                   reload={reload}
                   setReload={setReload}
-                  noteId={note.id}
+                  note={note}
+                  setNotes={setNotes}
                   loading={loading}
                   setLoading={setLoading}
                 />

@@ -30,10 +30,10 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const data = await request.json();
-    await prisma.note.create({
+    const response = await prisma.note.create({
       data: data,
     });
-    return NextResponse.json("note created!");
+    return NextResponse.json(response);
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error: error.message });

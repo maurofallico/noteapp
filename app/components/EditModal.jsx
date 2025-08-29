@@ -5,8 +5,8 @@ import { CgClose } from "react-icons/cg";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function EditModal({ noteId, reload, setReload }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function EditModal({ isOpen, setIsOpen, note, setNotes, reload, setReload }) {
+  
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [content, setContent] = useState("");
@@ -54,72 +54,72 @@ export default function EditModal({ noteId, reload, setReload }) {
     }
   }
 
-  const handleEdit = async (noteId) => {
-    setIsOpen(true);
+useEffect(() => {
+  if (isOpen) {
+  const fetchNote = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`/api/notes/${note.id}`);
+        const data = response.data;
 
-    try {
-      setLoading(true)
-      const response = await axios.get(
-        `/api/notes/${noteId}`
-      );
-      const data = await response.data;
-      setTitle(data.title);
-      setCategoryList((prevCategoryList) => [
-        ...prevCategoryList,
-        ...data.category,
-      ]);
-      setContent(data.content);
-      setLoading(false)
-    } catch (error) {
-      console.log(error);
+        setTitle(data.title);
+        setCategoryList((prev) => [...prev, ...data.category]);
+        setContent(data.content);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
     }
+    fetchNote();
   };
+
+}, [isOpen]);
 
   function cancelEdit() {
     setIsOpen(false);
-    setCategoryList("");
+    setCategoryList([]);
   }
 
   async function onSubmit() {
-    if (title && content) {
-      try {
-        setLoading(true)
-        await axios.put(`/api/notes/${noteId}`, {
-          title: title,
-          category: categoryList,
-          content: content,
-        })
-        setCategoryList([]);
-        setIsOpen(false);
-        setReload(!reload);
-        setLoading(false)
-      } catch (error) {
-        console.log(error);
+    if (title) {
+        try {
+          setLoading(true)
+          await axios.put(`/api/notes/${note.id}`, {
+            title: title,
+            category: categoryList,
+            content: content,
+          })
+          setCategoryList([]);
+          setIsOpen(false);
+          setReload(!reload);
+          setLoading(false)
+        } catch (error) {
+          console.log(error);
+        }
       }
-    }
     if (!title) {
       setTitleError(true);
     } else {
       setTitleError(false);
     }
-    if (!content) {
-      setContentError(true);
-    } else {
-      setContentError(false);
-    }
   }
 
   return (
-    <>
-      <button title="Edit" onMouseOver={(e) => e.target.focus()} onClick={() => handleEdit(noteId)} className="h-fit">
+    <div>
+      {/* <button title="Edit" onMouseOver={(e) => e.target.focus()} onClick={() => handleEdit(note.id)} className="h-fit">
         <FaRegEdit />
-      </button>
+      </button> */}
       {isOpen ? (
-        <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
+        <div className="text-black fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
           {loading? (<div className="w-screen h-screen justify-center items-center flex">
         <span className="loading loading-spinner loading-lg scale-150"></span>
         </div>) : (<div className="bg-blue-50 shadow-2xl border-2 border-slate-700 p-3 sm:rounded-xl flex flex-col items-center gap-2 w-screen sm:w-[450px] h-[490px]">
-            <button onClick={() => cancelEdit()} className="flex self-end">
+            <button onClick={(e) => {
+              cancelEdit()
+              e.stopPropagation()}
+              }
+              className="flex self-end">
               <CgClose className="hover:text-red-600 text-lg" />
             </button>
             <div className="px-16 ">
@@ -218,15 +218,6 @@ export default function EditModal({ noteId, reload, setReload }) {
                       className="bg-gray-50 px-1 border rounded border-black w-64 h-48"
                     ></textarea>
                   </div>
-                  {contentError ? (
-                    <p className="text-xs text-red-500 self-start ml-24">
-                      Content cannot be empty.
-                    </p>
-                  ) : (
-                    <p className="text-xs">
-                      <br></br>
-                    </p>
-                  )}
                   <button
                     onClick={() => {
                       onSubmit();
@@ -241,6 +232,6 @@ export default function EditModal({ noteId, reload, setReload }) {
           </div>)}
         </div>
       ) : null}
-    </>
+    </div>
   );
 }
