@@ -1,12 +1,15 @@
 "use client";
 
-import SearchBar from "./components/SearchBar.jsx";
 import Board from "./components/Board.jsx";
 import NavBar from "./components/NavBar.jsx";
 import { useState, useEffect } from "react";
 import axios from 'axios';
+import { UserAuth } from "@/context/AuthContext";
+
 
 export default function Home() {
+
+  const { user } = UserAuth();
 
   const [selected, setSelected] = useState("active");
   const [filters, setFilters] = useState([]);
@@ -17,10 +20,16 @@ export default function Home() {
 
   const [loading, setLoading] = useState(true);
 
+  const [userId, setUserId] = useState();
+
   useEffect(() => {
+    getUserID();
     fetchNotes();
+  }, [reload, user])
+
+  useEffect(() => {
     fetchLists();
-  }, [reload])
+  }, [userId])
 
   async function fetchNotes () {
     try {
@@ -48,16 +57,25 @@ export default function Home() {
     }
   };
 
+  async function getUserID() {
+    if (user) {
+      const response = await axios.get(`/api/user?email=${user.email}`)
+      setUserId(response.data.id)
+    }
+  }
+
   async function fetchLists () {
-    try {
-      let apiUrl = "/api/list";
-      const response = await axios.get(apiUrl);
-      const data = await response.data;
-      data.sort((a, b) => a.id - b.id);
-      setLists(data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
+    if (userId) {
+      try {
+        let apiUrl = `/api/list?id=${userId}`;
+        const response = await axios.get(apiUrl);
+        const data = await response.data;
+        data.sort((a, b) => a.id - b.id);
+        setLists(data);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -76,7 +94,7 @@ export default function Home() {
 
         <div className="sm:w-fit sm:self-center sm:grid md:grid-cols-2 xl:grid-cols-3 mt-8 flex flex-col gap-x-4 gap-y-8 pb-16 ">
           <Board
-            notes={notes} setNotes={setNotes} lists={lists} setLists={setLists} reload={reload} setReload={setReload} loading={loading} setLoading={setLoading}
+            userId={userId} notes={notes} setNotes={setNotes} lists={lists} setLists={setLists} reload={reload} setReload={setReload} loading={loading} setLoading={setLoading}
           />
         </div>
       </div>

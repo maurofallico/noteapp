@@ -7,7 +7,9 @@ import axios from "axios";
 import { AiFillDelete } from "react-icons/ai";
 import { CgClose } from "react-icons/cg"; 
 
+
 export default function Board({
+  userId,
   notes,
   setNotes,
   lists,
@@ -150,6 +152,7 @@ export default function Board({
     if (!newListText.trim()) return;
     const response = await axios.post("api/list", {
       name: newListText,
+      userID: userId
     });
     const newList = response.data;
 

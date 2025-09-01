@@ -15,8 +15,8 @@ model Note {
   title     String
   category  String[]
   content   String
-  statusID  Int
-  status    List     @relation(fields: [statusID], references: [id])
+  listID  Int
+  list    List     @relation(fields: [listID], references: [id])
   @@schema("test")
 }
 
@@ -24,5 +24,14 @@ model List {
   id       Int      @id @default(autoincrement())
   name     String
   notes    Note[]
+  userID   Int
+  user     User     @relation(fields: [userID], references: [id])
+  @@schema("test")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  lists    List[]
   @@schema("test")
 }
