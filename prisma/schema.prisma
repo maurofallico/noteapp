@@ -16,7 +16,7 @@ model Note {
   category  String[]
   content   String
   listID  Int
-  list    List     @relation(fields: [listID], references: [id])
+  list     List   @relation(fields: [listID], references: [id], onDelete: Cascade)
   @@schema("test")
 }
 
