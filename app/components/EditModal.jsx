@@ -5,7 +5,7 @@ import { CgClose } from "react-icons/cg";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function EditModal({ isOpen, setIsOpen, note, setNotes, reload, setReload }) {
+export default function EditModal({ setDraggable, isOpen, setIsOpen, note, setNotes, reload, setReload }) {
   
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
@@ -59,7 +59,7 @@ useEffect(() => {
   const fetchNote = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`/api/notes/${note.id}`);
+        const response = await axios.get(`/api/note/${note.id}`);
         const data = response.data;
 
         setTitle(data.title);
@@ -78,6 +78,7 @@ useEffect(() => {
 
   function cancelEdit() {
     setIsOpen(false);
+    setDraggable(true);
     setCategoryList([]);
   }
 
@@ -85,13 +86,14 @@ useEffect(() => {
     if (title) {
         try {
           setLoading(true)
-          await axios.put(`/api/notes/${note.id}`, {
+          await axios.put(`/api/note/${note.id}`, {
             title: title,
             category: categoryList,
             content: content,
           })
           setCategoryList([]);
           setIsOpen(false);
+          setDraggable(true);
           setReload(!reload);
           setLoading(false)
         } catch (error) {
@@ -106,15 +108,15 @@ useEffect(() => {
   }
 
   return (
-    <div>
+    <div className="cursor-default">
       {/* <button title="Edit" onMouseOver={(e) => e.target.focus()} onClick={() => handleEdit(note.id)} className="h-fit">
         <FaRegEdit />
       </button> */}
       {isOpen ? (
-        <div className="text-black fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
+        <div className="text-gray-300 fixed inset-0 bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
           {loading? (<div className="w-screen h-screen justify-center items-center flex">
         <span className="loading loading-spinner loading-lg scale-150"></span>
-        </div>) : (<div className="bg-blue-50 shadow-2xl border-2 border-slate-700 p-3 sm:rounded-xl flex flex-col items-center gap-2 w-screen sm:w-[450px] h-[490px]">
+        </div>) : (<div className="bg-gray-800 shadow-2xl border-2 border-slate-700 p-3 sm:rounded-xl flex flex-col items-center gap-2 w-screen sm:w-[450px] h-[460px]">
             <button onClick={(e) => {
               cancelEdit()
               e.stopPropagation()}
@@ -122,19 +124,14 @@ useEffect(() => {
               className="flex self-end">
               <CgClose className="hover:text-red-600 text-lg" />
             </button>
-            <div className="px-16 ">
-              <div className="flex flex-col gap-2 items-end text-base">
-                <div className="flex gap-4 items-center">
-                  <label>
-                    <strong>Title</strong>
-                  </label>
+            <div className="w-full">
+              <div className="w-full flex flex-col gap-2 items-end text-base px-8">
                   <input
                     name="title"
                     onChange={handleChange}
                     value={title}
-                    className="bg-gray-50 px-1 border rounded border-black w-64"
+                    className="bg-transparent px-1.5 py-0.5 w-full text-2xl"
                   ></input>
-                </div>
                 {titleError ? (
                   <p className="text-xs text-red-500 self-start ml-24">
                     Title cannot be empty.
@@ -144,7 +141,7 @@ useEffect(() => {
                     <br></br>
                   </p>
                 )}
-                <div className="flex flex-col gap-0 items-end">
+                {/* <div className="flex flex-col gap-0 items-end">
                   <div className="flex flex-row gap-4 ">
                     <label>
                       <strong>Categories</strong>
@@ -205,24 +202,25 @@ useEffect(() => {
                       )}
                     </div>
                   </div>
-                </div>
-                <div className="flex flex-col">
-                  <div className="flex gap-4 items-center ">
-                    <label>
-                      <strong>Content</strong>
+                </div> */}
+                <div className="flex flex-col w-full gap-4">
+                  <div className="flex flex-col gap-2 items-center w-full">
+                    <label className="w-full">
+                      <strong>Description</strong>
                     </label>
                     <textarea
+                      placeholder="Add a more detailed description..."
                       name="content"
                       onChange={handleChange}
                       value={content}
-                      className="bg-gray-50 px-1 border rounded border-black w-64 h-48"
+                      className="bg-transparent px-2 py-1 rounded border border-gray-300 w-full h-48"
                     ></textarea>
                   </div>
                   <button
                     onClick={() => {
                       onSubmit();
                     }}
-                    className="border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-1 self-end mt-2"
+                    className="text-black border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-1 self-end mt-2"
                   >
                     Update
                   </button>

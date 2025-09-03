@@ -31,11 +31,14 @@ export default function Board({
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteID, setDeleteID] = useState(0);
 
+  const [draggable, setDraggable] = useState(true);
+
   async function deleteList() {
     await axios.delete(`api/list/${deleteID}`);
     const newLists = lists.filter((list) => list.id !== deleteID);
     setLists(newLists);
     setDeleteModal(false);
+    setDraggable(true)
   }
 
   useEffect(() => {
@@ -58,7 +61,6 @@ export default function Board({
     const destListId = Number(destination.droppableId);
     if (Number.isNaN(sourceListId) || Number.isNaN(destListId)) return;
 
-    // guardo snapshots para rollback en caso de fallo del API
     const prevLists = JSON.parse(JSON.stringify(lists));
     const prevNotes = JSON.parse(JSON.stringify(notes));
 
@@ -66,18 +68,15 @@ export default function Board({
     const destList = lists.find((l) => l.id === destListId);
     if (!sourceList || !destList) return;
 
-    // copias para no mutar el estado directamente
     const sourceNotes = Array.from(sourceList.notes || []);
     const destNotes =
       sourceListId === destListId
         ? sourceNotes
         : Array.from(destList.notes || []);
 
-    // extraigo el item movido
     const [movedNote] = sourceNotes.splice(source.index, 1);
     if (!movedNote) return;
 
-    // caso: reorden dentro de la misma lista
     if (sourceListId === destListId) {
       sourceNotes.splice(destination.index, 0, movedNote);
       const newLists = lists?.map((l) =>
@@ -87,7 +86,6 @@ export default function Board({
       return;
     }
 
-    // caso: mover entre listas
     destNotes.splice(destination.index, 0, movedNote);
     const newLists = lists?.map((l) => {
       if (l.id === sourceListId) return { ...l, notes: sourceNotes };
@@ -95,21 +93,17 @@ export default function Board({
       return l;
     });
 
-    // actualizo UI optimísticamente
     setLists(newLists);
 
-    // actualizo el array plano de notas (si lo tenés en state)
     const updatedMovedNote = { ...movedNote, listID: destListId };
     setNotes((prev) =>
       prev.map((n) => (n.id === updatedMovedNote.id ? updatedMovedNote : n))
     );
 
-    // persistir en backend; si falla, hago rollback
     try {
       await axios.put(`/api/note/${movedNote.id}`, { listID: destListId });
     } catch (err) {
       console.error("Error actualizando nota en servidor:", err);
-      // rollback a los snapshots
       setLists(prevLists);
       setNotes(prevNotes);
     }
@@ -151,7 +145,6 @@ export default function Board({
         listID: columnID,
       };
 
-      // Actualizar localmente
       setCreatingNote(null);
       setNotes((prev) => [...prev, newNote]);
       setReload(!reload);
@@ -181,6 +174,7 @@ export default function Board({
                           onClick={() => {
                             setDeleteID(list.id);
                             setDeleteModal(true);
+                            setDraggable(false)
                           }}
                           className="text-white transition-all duration-200 ease-in-out h-fit hover:text-gray-200 hover:scale-125"
                         >
@@ -194,6 +188,7 @@ export default function Board({
                               key={note.id.toString()}
                               draggableId={note.id.toString()}
                               index={index}
+                              isDragDisabled={!draggable}
                             >
                               {(provided) => (
                                 <div
@@ -203,6 +198,8 @@ export default function Board({
                                   {...provided.dragHandleProps}
                                 >
                                   <Note
+                                    draggable={draggable}
+                                    setDraggable={setDraggable}
                                     note={note}
                                     notes={notes}
                                     setNotes={setNotes}
@@ -302,6 +299,7 @@ export default function Board({
               onClick={(e) => {
                 e.stopPropagation();
                 setDeleteModal(false);
+                setDraggable(true)
               }}
               className="flex self-end"
             >
@@ -324,6 +322,7 @@ export default function Board({
                 onClick={(e) => {
                   e.stopPropagation();
                   setDeleteModal(false);
+                  setDraggable(true)
                 }}
                 className="border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-0.5 self-center mt-1"
               >

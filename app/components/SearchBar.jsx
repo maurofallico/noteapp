@@ -21,7 +21,7 @@ export default function SearchBar({ setFilters, reload }) {
 
   async function getFilters() {
     try {
-      const response = await axios.get('/api/notes', { params: { timestamp: new Date().getTime() } });
+      const response = await axios.get('/api/note', { params: { timestamp: new Date().getTime() } });
       const data = response.data;
       const newAllFilters = data.reduce((filters, note) => {
         note.category.forEach((category) => {

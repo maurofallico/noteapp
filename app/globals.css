@@ -51,3 +51,9 @@ body {
   margin-bottom: 30px;
 }
 }
+
+input:focus, textarea:focus {
+  border: none;
+  outline: outset;
+  outline-color: rgb(97, 126, 255);
+}

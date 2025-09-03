@@ -62,7 +62,7 @@ export default function CreateNote({reload, setReload}) {
     if (title && content) {
       try {
         setLoading(true)
-        await axios.post("/api/notes", {
+        await axios.post("/api/note", {
             title: title,
             category: categoryList,
             content: content,

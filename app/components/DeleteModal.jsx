@@ -2,12 +2,12 @@
 
 import { AiFillDelete } from "react-icons/ai";
 import { CgClose } from "react-icons/cg";
-import { useState, forwardRef } from "react";
+import { useState, useEffect, forwardRef } from "react";
 import axios from "axios";
 
 //const DeleteModal = forwardRef(({ note, ...props }, ref) => {
 const DeleteModal = forwardRef(
-  ({ note, reload, setReload, loading, setLoading }, ref) => {
+  ({ setDraggable, note, reload, setReload, loading, setLoading }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
 
     async function deleteNote(id) {
@@ -21,8 +21,17 @@ const DeleteModal = forwardRef(
       }
     }
 
+    useEffect(() => {
+      if (isOpen) {
+        setDraggable(false)
+      }
+      else{
+        setDraggable(true)
+      }
+    }, [isOpen])
+
     return (
-      <>
+      <div className="cursor-default">
         <button
           ref={ref}
           title="Delete"
@@ -39,6 +48,7 @@ const DeleteModal = forwardRef(
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsOpen(false);
+                  setDraggable(true);
                 }}
                 className="flex self-end"
               >
@@ -52,6 +62,7 @@ const DeleteModal = forwardRef(
                   onClick={(e) => {
                     e.stopPropagation();
                     deleteNote(note.id);
+                    setDraggable(true)
                   }}
                   className="border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-0.5 self-center mt-1"
                 >
@@ -61,6 +72,7 @@ const DeleteModal = forwardRef(
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsOpen(false);
+                    setDraggable(true)
                   }}
                   className="border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-0.5 self-center mt-1"
                 >
@@ -70,7 +82,7 @@ const DeleteModal = forwardRef(
             </div>
           </div>
         ) : null}
-      </>
+      </div>
     );
   }
 );
