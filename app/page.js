@@ -19,40 +19,44 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(true);
 
-  const [userId, setUserId] = useState();
+  const [userId, setUserId] = useState(undefined);
 
   useEffect(() => {
-    setLoading(true);
     async function fetchAll() {
+      setLoading(true);
+
+      if (user === null) {
+        setNotes([]);
+        setLists(undefined);
+        setUserId(null);
+        setLoading(false);
+        return;
+      }
+
       try {
         const userResponse = await axios.get(`/api/user?email=${user.email}`);
         const id = userResponse.data.id;
+        if (!id) return;
+        const listsResponse = await axios.get(`/api/list?userId=${id}`);
+
         setUserId(id);
-
-        const [notesResponse, listsResponse] = await Promise.all([
-          axios.get("/api/note"),
-          axios.get(`/api/list?id=${id}`),
-        ]);
-
-        const notesData = notesResponse.data.sort((a, b) => a.id - b.id);
-        setNotes(notesData);
-
-        const listsData = listsResponse.data.sort((a, b) => a.id - b.id);
-        setLists(listsData);
-      } catch (error) {
-        console.error(error);
+        
+        setLists(listsResponse.data.sort((a, b) => a.id - b.id));
+      } catch (err) {
+        console.error(err);
+        setNotes([]);
+        setLists([]);
       } finally {
-        setTimeout(() => setLoading(false), 250);
         setLoading(false);
       }
     }
 
-    if (user) {
-      
-      setTimeout(() => {
-        
-        fetchAll();
-      }, 250);
+    if (user!==undefined) {
+      fetchAll();
+    }
+    else{
+      setUserId(undefined)
+      setLoading(false)
     }
   }, [reload, user]);
 
@@ -69,7 +73,7 @@ export default function Home() {
           {/* <SearchBar setFilters={setFilters} reload={reload} /> */}
         </div>
 
-        <div className="sm:w-fit sm:self-center sm:grid md:grid-cols-2 xl:grid-cols-3 mt-8 flex flex-col gap-x-4 gap-y-8 pb-16 ">
+        <div className="mt-8 flex flex-col gap-x-4 gap-y-8 pb-16 ">
           <Board
             userId={userId}
             notes={notes}

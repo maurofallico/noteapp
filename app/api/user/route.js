@@ -4,44 +4,44 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function GET(request) {
-    try {
-        const { searchParams } = new URL(request.url);
-        const email = searchParams.get("email");
-        let user;
-        let users;
+  try {
+    const { searchParams } = new URL(request.url);
+    const email = searchParams.get("email");
+    let user;
+    let users;
 
-        if (email){
-            user = await prisma.user.findUnique({
-              where: { email },
-              include: { lists: true }
-            })
-        }
-        else{
-          users = await prisma.user.findMany(
-            {
-              include: { lists: true }
-            }
-          );
-        }
-        if (users) {
-          return NextResponse.json(users);
-        }
-        else if(user) {
-          return NextResponse.json(user)
-        }
-    
-        else {
-          return NextResponse.json(
-            {
-              message: "No se encontró ningún usuario con esa informacion",
+    if (email) {
+      user = await prisma.user.findUnique({
+        where: { email },
+        include: { lists: true },
+      });
+    } else {
+      users = await prisma.user.findMany({
+        include: {
+          lists: {
+            include: {
+              notes: true
             },
-            { status: 202 }
-          );
-        }
-    } catch (error) {
-      console.log(error);
-      return NextResponse.json({ error: error.message });
+          },
+        },
+      });
     }
+    if (users) {
+      return NextResponse.json(users);
+    } else if (user) {
+      return NextResponse.json(user);
+    } else {
+      return NextResponse.json(
+        {
+          message: "No se encontró ningún usuario con esa informacion",
+        },
+        { status: 202 }
+      );
+    }
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ error: error.message });
+  }
 }
 
 export async function POST(request) {
@@ -61,20 +61,20 @@ export async function POST(request) {
     }
     if (email) {
       const newUser = await prisma.user.create({
-      data: {
-        email,
-        lists: {
-          create: [
-            { name: "To Do" },
-            { name: "In Progress" },
-            { name: "Finished" },
-          ],
+        data: {
+          email,
+          lists: {
+            create: [
+              { name: "To Do" },
+              { name: "In Progress" },
+              { name: "Finished" },
+            ],
+          },
         },
-      },
-      include: {
-        lists: true,
-      },
-    });
+        include: {
+          lists: true,
+        },
+      });
 
       return NextResponse.json({
         message: "Usuario creado exitosamente",

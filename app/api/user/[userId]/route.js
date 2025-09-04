@@ -35,10 +35,30 @@ export async function DELETE(request, { params }) {
       return NextResponse.json("Usuario no encontrado");
     }
 
-    await prisma.user.delete({
-      where: {
-        id: Number(userId),
-      },
+    await prisma.$transaction(async (prisma) => {
+      // 1️⃣ Borrar todas las notas de las listas del usuario
+      const lists = await prisma.list.findMany({
+        where: { userID: Number(userId) },
+        select: { id: true },
+      });
+
+      const listIds = lists.map((l) => l.id);
+
+      if (listIds.length > 0) {
+        await prisma.note.deleteMany({
+          where: { listID: { in: listIds } },
+        });
+      }
+
+      // 2️⃣ Borrar todas las listas del usuario
+      await prisma.list.deleteMany({
+        where: { userID: Number(userId) },
+      });
+
+      // 3️⃣ Borrar el usuario
+      await prisma.user.delete({
+        where: { id: Number(userId) },
+      });
     });
 
     return NextResponse.json(
@@ -71,7 +91,7 @@ export async function PUT(request, { params }) {
     await prisma.user.update({
       where: { id: Number(userId) },
       data: {
-        email
+        email,
       },
     });
 

@@ -5,13 +5,14 @@ const prisma = new PrismaClient();
 
 export async function GET(request, { params }) {
   const { noteId } = params;
-
   try {
     if (noteId) {
+      
       const result = await prisma.note.findUnique({
         where: {
           id: Number(noteId),
         },
+        include: { list: true },
       });
       return NextResponse.json(result, { status: 200 });
     }
