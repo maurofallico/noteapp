@@ -16,7 +16,8 @@ export default function Board({
   reload,
   setReload,
   loading,
-  setLoading
+  setLoading,
+  loadingListID
 }) {
   const noteInputRef = useRef(null);
   const listInputRef = useRef(null);
@@ -202,109 +203,128 @@ export default function Board({
                         {...provided.droppableProps}
                         className="bg-black flex flex-col items-center w-[330px] py-3 px-4 rounded-xl h-fit gap-4 "
                       >
-                        <div className="flex items-center justify-between w-full">
-                          {editingListId === list.id ? (
-                            <input
-                              ref={listInputEditRef}
-                              type="text"
-                              className="px-2 py-1 rounded-md text-white"
-                              value={newListText}
-                              onChange={(e) => setNewListText(e.target.value)}
-                              onBlur={() => confirmEditList(list.id)} // opcional: guardar al perder foco
-                            />
-                          ) : (
-                            <span className="text-gray-200">{list.name}</span>
-                          )}
-                          <div className="flex gap-1">
-                            <button
-                              onMouseOver={(e) => e.target.focus()}
-                              onClick={() => {
-                                editList(list.id);
-                              }}
-                              className="text-white transition-all duration-200 ease-in-out h-fit hover:text-gray-200 hover:scale-125"
-                            >
-                              <AiFillEdit className="text-lg" />
-                            </button>
-                            <button
-                              onMouseOver={(e) => e.target.focus()}
-                              onClick={() => {
-                                setDeleteID(list.id);
-                                setDeleteModal(true);
-                                setDraggable(false);
-                              }}
-                              className="text-white transition-all duration-200 ease-in-out h-fit hover:text-gray-200 hover:scale-125"
-                            >
-                              <AiFillDelete />
-                            </button>
+                        {loadingListID === list.id ? (
+                          // 🔄 Spinner
+                          <div className="flex justify-center items-center h-[120px] w-full">
+                            <div className="w-8 h-8 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
                           </div>
-                        </div>
-                        <div className="flex flex-col gap-4 w-full">
-                          <div className="flex flex-col w-full gap-2">
-                            {list.notes?.map((note, index) => (
-                              <Draggable
-                                key={note.id.toString()}
-                                draggableId={note.id.toString()}
-                                index={index}
-                                isDragDisabled={!draggable}
-                              >
-                                {(provided) => (
-                                  <div
-                                    className="flex justify-center"
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                  >
-                                    <Note
-                                      draggable={draggable}
-                                      setDraggable={setDraggable}
-                                      note={note}
-                                      notes={notes}
-                                      setNotes={setNotes}
-                                      reload={reload}
-                                      setReload={setReload}
-                                      loading={loading}
-                                      setLoading={setLoading}
-                                    />
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
-                            {provided.placeholder}
-                          </div>
-                          {creatingNote === list.id ? (
-                            <div className="bg-gray-800 p-2 rounded-lg flex flex-col gap-2">
-                              <input
-                                ref={noteInputRef}
-                                type="text"
-                                placeholder="New task..."
-                                className="px-2 py-1 rounded-md text-white"
-                                value={newNoteText}
-                                onChange={(e) => setNewNoteText(e.target.value)}
-                              />
-                              <div className="flex gap-2">
+                        ) : (
+                          <div className="flex flex-col w-full gap-6">
+                            <div className="flex items-center justify-between w-full">
+                              {editingListId === list.id ? (
+                                <input
+                                  ref={listInputEditRef}
+                                  type="text"
+                                  className="px-2 py-1 rounded-md text-white"
+                                  value={newListText}
+                                  onChange={(e) =>
+                                    setNewListText(e.target.value)
+                                  }
+                                  onBlur={() => confirmEditList(list.id)}
+                                />
+                              ) : (
+                                <span className="text-gray-200">
+                                  {list.name}
+                                </span>
+                              )}
+                              <div className="flex gap-1">
                                 <button
-                                  className="bg-green-600 px-2 py-1 rounded-md text-white"
-                                  onClick={() => confirmCreateNote(list.id)}
+                                  onMouseOver={(e) => e.target.focus()}
+                                  onClick={() => {
+                                    editList(list.id);
+                                  }}
+                                  className="text-white transition-all duration-200 ease-in-out h-fit hover:text-gray-200 hover:scale-125"
                                 >
-                                  Create
+                                  <AiFillEdit className="text-lg" />
                                 </button>
                                 <button
-                                  className="bg-red-600 px-2 py-1 rounded-md text-white"
-                                  onClick={() => setCreatingNote(null)}
+                                  onMouseOver={(e) => e.target.focus()}
+                                  onClick={() => {
+                                    setDeleteID(list.id);
+                                    setDeleteModal(true);
+                                    setDraggable(false);
+                                  }}
+                                  className="text-white transition-all duration-200 ease-in-out h-fit hover:text-gray-200 hover:scale-125"
                                 >
-                                  Cancel
+                                  <AiFillDelete />
                                 </button>
                               </div>
                             </div>
-                          ) : (
-                            <button
-                              onClick={() => createNote(list.id)}
-                              className="transition-all duration-200 ease-in-out px-2 text-start text-gray-200 w-full rounded-lg pb-2 pt-1 hover:bg-gray-800"
-                            >
-                              + Add task
-                            </button>
-                          )}
-                        </div>
+
+                            <div className="flex flex-col gap-4 w-full">
+                              <div className="flex flex-col w-full gap-2">
+                                {list.notes?.map((note, index) => (
+                                  <Draggable
+                                    key={note.id.toString()}
+                                    draggableId={note.id.toString()}
+                                    index={index}
+                                    isDragDisabled={!draggable}
+                                  >
+                                    {(provided) => (
+                                      <div
+                                        className="flex justify-center"
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                      >
+                                        <Note
+                                          draggable={draggable}
+                                          setDraggable={setDraggable}
+                                          note={note}
+                                          notes={notes}
+                                          setNotes={setNotes}
+                                          reload={reload}
+                                          setReload={setReload}
+                                          loading={loading}
+                                          setLoading={setLoading}
+                                        />
+                                      </div>
+                                    )}
+                                  </Draggable>
+                                ))}
+                                {provided.placeholder}
+                              </div>
+
+                              {creatingNote === list.id ? (
+                                <div className="bg-gray-800 p-2 rounded-lg flex flex-col gap-2">
+                                  <input
+                                    ref={noteInputRef}
+                                    type="text"
+                                    placeholder="New task..."
+                                    className="px-2 py-1 rounded-md text-white"
+                                    value={newNoteText}
+                                    onChange={(e) =>
+                                      setNewNoteText(e.target.value)
+                                    }
+                                  />
+                                  <div className="flex gap-2">
+                                    <button
+                                      className="bg-green-600 px-2 py-1 rounded-md text-white"
+                                      onClick={() =>
+                                        confirmCreateNote(list.id)
+                                      }
+                                    >
+                                      Create
+                                    </button>
+                                    <button
+                                      className="bg-red-600 px-2 py-1 rounded-md text-white"
+                                      onClick={() => setCreatingNote(null)}
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => createNote(list.id)}
+                                  className="transition-all duration-200 ease-in-out px-2 text-start text-gray-200 w-full rounded-lg pb-2 pt-1 hover:bg-gray-800"
+                                >
+                                  + Add task
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </Droppable>

@@ -21,6 +21,8 @@ export default function Home() {
 
   const [userId, setUserId] = useState(undefined);
 
+  const [loadingListID, setLoadingListID] = useState();
+
   useEffect(() => {
     async function fetchAll() {
 
@@ -33,20 +35,24 @@ export default function Home() {
       }
 
       try {
+        setLoadingListID()
         const userResponse = await axios.get(`/api/user?email=${user.email}`);
         const id = userResponse.data.id;
         if (!id) return;
+        setLoadingListID(id)
         const listsResponse = await axios.get(`/api/list?userId=${id}`);
 
         setUserId(id);
-        
         setLists(listsResponse.data.sort((a, b) => a.id - b.id));
+        setLoadingListID()
       } catch (err) {
         console.error(err);
         setNotes([]);
         setLists([]);
+        setLoadingListID()
       } finally {
         setLoading(false);
+        
       }
     }
 
@@ -86,6 +92,7 @@ export default function Home() {
             setReload={setReload}
             loading={loading}
             setLoading={setLoading}
+            loadingListID={loadingListID}
           />
         </div>
       </div>
