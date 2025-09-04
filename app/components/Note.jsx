@@ -17,6 +17,8 @@ export default function Note({
   setReload,
   loading,
   setLoading,
+  loadingNoteID,
+  setLoadingNoteID,
 }) {
   const nodeRef = useRef(null);
   const deleteRef = useRef(null);
@@ -37,7 +39,11 @@ export default function Note({
   ];
 
   function openEditModal(e) {
-    if (deleteRef.current && !deleteRef.current.contains(e.target) && draggable) {
+    if (
+      deleteRef.current &&
+      !deleteRef.current.contains(e.target) &&
+      draggable
+    ) {
       setEditOpen(true);
       setDraggable(false);
     }
@@ -50,46 +56,53 @@ export default function Note({
         ref={nodeRef}
         className="transition-all duration-200 ease-in-out border-2 border-gray-700 hover:border-2 hover:border-white sm:mb-0 mb-6 shadow-md sm:shadow-xl text-gray-200 bg-gradient-to-r w-fit text-sm sm:text-base sm:h-fit sm:rounded-2xl px-3 py-2 bg-gray-700 cursor-pointer"
       >
-        <div className="flex flex-row mb-4">
-          <div className="flex items-start flex-row w-[283px] gap-8">
-            {note.category?.map((cat, index) => (
-              <div key={index} className="flex">
-                <p className="bg-gray-400 text-black px-2 border border-black border-opacity-20 rounded-lg">
-                  #{cat}
-                </p>
+        <div className="flex flex-col mb-4">
+          <div className="flex items-start flex-col w-[283px] h-[100px] gap-8">
+            {loadingNoteID == note.id ? (
+              <div className="flex w-full justify-center items-center h-full">
+                <span className="loading loading-spinner loading-lg scale-125 "></span>
               </div>
-            ))}
-            <p className="text-lg w-[200px] break-words">
-              <strong>{note.title}</strong>
-            </p>
-            <div className="flex items-center py-1 w-full place-content-end text-lg gap-1">
-              <EditModal
-                setDraggable={setDraggable}
-                reload={reload}
-                setReload={setReload}
-                note={note}
-                setNotes={setNotes}
-                isOpen={editOpen}
-                setIsOpen={setEditOpen}
-              />
-              <DeleteModal
-                setDraggable={setDraggable}
-                ref={deleteRef}
-                reload={reload}
-                setReload={setReload}
-                note={note}
-                setNotes={setNotes}
-              />
-            </div>
+              
+            ) : (
+              <div className="flex flex-col w-full">
+                <div className="flex flex-row">
+                  <strong>{note.title}</strong>
+                  <div className="flex flex-row items-censter py-1 w-full place-content-end text-lg gap-1">
+                    <EditModal
+                      setDraggable={setDraggable}
+                      reload={reload}
+                      setReload={setReload}
+                      note={note}
+                      setNotes={setNotes}
+                      isOpen={editOpen}
+                      setIsOpen={setEditOpen}
+                      setLoadingNoteID={setLoadingNoteID}
+                    />
+                    <DeleteModal
+                      setDraggable={setDraggable}
+                      ref={deleteRef}
+                      reload={reload}
+                      setReload={setReload}
+                      note={note}
+                      setNotes={setNotes}
+                    />
+                  </div>
+                  </div>
+
+                  <div className="h-full items-start">
+                    <p
+                      className="flex text-pretty px-2 text-md mb-3 overflow-hidden max-h-fit "
+                      dangerouslySetInnerHTML={{
+                        __html: note.content
+                          ? note.content.replace(/\n/g, "<br />")
+                          : "",
+                      }}
+                    />
+                  </div>
+                
+              </div>
+            )}
           </div>
-        </div>
-        <div className="h-full items-start">
-          <p
-            className="flex text-pretty px-2 text-md mb-3 overflow-hidden max-h-fit "
-            dangerouslySetInnerHTML={{
-              __html: note.content ? note.content.replace(/\n/g, "<br />") : "",
-            }}
-          />
         </div>
       </div>
     </>

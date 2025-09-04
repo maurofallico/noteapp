@@ -5,7 +5,7 @@ import { CgClose } from "react-icons/cg";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function EditModal({ setDraggable, isOpen, setIsOpen, note, setNotes, reload, setReload }) {
+export default function EditModal({ setLoadingNoteID, setDraggable, isOpen, setIsOpen, note, setNotes, reload, setReload }) {
   
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
@@ -93,6 +93,7 @@ useEffect(() => {
             category: categoryList,
             content: content,
           })
+          setLoadingNoteID(note.id)
           setCategoryList([]);
           setIsOpen(false);
           setDraggable(true);

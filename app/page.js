@@ -21,7 +21,7 @@ export default function Home() {
 
   const [userId, setUserId] = useState(undefined);
 
-  const [loadingListID, setLoadingListID] = useState();
+  const [loadingNoteID, setLoadingNoteID] = useState();
 
   useEffect(() => {
     async function fetchAll() {
@@ -35,21 +35,21 @@ export default function Home() {
       }
 
       try {
-        setLoadingListID()
+        setLoadingNoteID()
         const userResponse = await axios.get(`/api/user?email=${user.email}`);
         const id = userResponse.data.id;
         if (!id) return;
-        setLoadingListID(id)
+        setLoadingNoteID(id)
         const listsResponse = await axios.get(`/api/list?userId=${id}`);
 
         setUserId(id);
         setLists(listsResponse.data.sort((a, b) => a.id - b.id));
-        setLoadingListID()
+        //setLoadingNoteID()
       } catch (err) {
         console.error(err);
         setNotes([]);
         setLists([]);
-        setLoadingListID()
+        setLoadingNoteID()
       } finally {
         setLoading(false);
         
@@ -63,6 +63,10 @@ export default function Home() {
       setUserId(undefined)
     }
   }, [reload, user]);
+
+/*   useEffect(() => {
+    console.log(loadingNoteID)
+  }, [loadingNoteID]) */
 
   return (
     <div className="overflow-x-hidden bg-gray-300 h-fit">
@@ -92,7 +96,8 @@ export default function Home() {
             setReload={setReload}
             loading={loading}
             setLoading={setLoading}
-            loadingListID={loadingListID}
+            loadingNoteID={loadingNoteID}
+            setLoadingNoteID={setLoadingNoteID}
           />
         </div>
       </div>

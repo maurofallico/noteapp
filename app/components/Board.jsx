@@ -17,7 +17,8 @@ export default function Board({
   setReload,
   loading,
   setLoading,
-  loadingListID
+  loadingNoteID,
+  setLoadingNoteID
 }) {
   const noteInputRef = useRef(null);
   const listInputRef = useRef(null);
@@ -35,6 +36,7 @@ export default function Board({
   const [draggable, setDraggable] = useState(true);
 
   const [editingListId, setEditingListId] = useState(null);
+  
 
   async function deleteList() {
     await axios.delete(`api/list/${deleteID}`);
@@ -182,6 +184,7 @@ export default function Board({
       console.error("Error creando nota:", err);
     }
   }
+  
 
   return (
     <>
@@ -203,12 +206,10 @@ export default function Board({
                         {...provided.droppableProps}
                         className="bg-black flex flex-col items-center w-[330px] py-3 px-4 rounded-xl h-fit gap-4 "
                       >
-                        {loadingListID === list.id ? (
-                          // 🔄 Spinner
-                          <div className="flex justify-center items-center h-[120px] w-full">
-                            <div className="w-8 h-8 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-                          </div>
-                        ) : (
+                        
+           
+                          
+              
                           <div className="flex flex-col w-full gap-6">
                             <div className="flex items-center justify-between w-full">
                               {editingListId === list.id ? (
@@ -267,7 +268,8 @@ export default function Board({
                                         {...provided.draggableProps}
                                         {...provided.dragHandleProps}
                                       >
-                                        <Note
+
+                                          <Note
                                           draggable={draggable}
                                           setDraggable={setDraggable}
                                           note={note}
@@ -277,13 +279,18 @@ export default function Board({
                                           setReload={setReload}
                                           loading={loading}
                                           setLoading={setLoading}
+                                          loadingNoteID={loadingNoteID}
+                                          setLoadingNoteID={setLoadingNoteID}
                                         />
+        
+                                        
                                       </div>
                                     )}
                                   </Draggable>
                                 ))}
                                 {provided.placeholder}
                               </div>
+                              
 
                               {creatingNote === list.id ? (
                                 <div className="bg-gray-800 p-2 rounded-lg flex flex-col gap-2">
@@ -324,7 +331,7 @@ export default function Board({
                               )}
                             </div>
                           </div>
-                        )}
+                        
                       </div>
                     )}
                   </Droppable>
