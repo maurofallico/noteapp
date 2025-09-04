@@ -61,7 +61,7 @@ export default function CreateNote({reload, setReload}) {
   async function onSubmit() {
     if (title && content) {
       try {
-        setLoading(true)
+        //setLoading(true)
         await axios.post("/api/note", {
             title: title,
             category: categoryList,
@@ -73,7 +73,7 @@ export default function CreateNote({reload, setReload}) {
         setCategoryList([])
         setContent('')
         setReload(!reload)
-        setLoading(false)
+        //setLoading(false)
         setIsOpen(false)
       } catch (error) {
         console.log(error);
