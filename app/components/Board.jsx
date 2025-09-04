@@ -35,6 +35,10 @@ export default function Board({
 
   const [editingListId, setEditingListId] = useState(null);
 
+  useEffect(() => {
+    console.log(loading)
+  }, [loading])
+
   async function deleteList() {
     await axios.delete(`api/list/${deleteID}`);
     const newLists = lists.filter((list) => list.id !== deleteID);

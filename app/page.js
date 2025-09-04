@@ -56,7 +56,6 @@ export default function Home() {
     }
     else{
       setUserId(undefined)
-      setLoading(false)
     }
   }, [reload, user]);
 
@@ -74,6 +73,11 @@ export default function Home() {
         </div>
 
         <div className="mt-8 flex flex-col gap-x-4 gap-y-8 pb-16 ">
+          {loading && (
+            <div className="w-full text-center mt-16 scale-125">
+              <span className="text-black loading loading-spinner loading-lg scale-150"></span>
+            </div>
+          )}
           <Board
             userId={userId}
             notes={notes}
