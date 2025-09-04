@@ -149,7 +149,7 @@ useEffect(() => {
                   )}
                   <div className="flex flex-col w-full gap-4">
                     <div className="flex flex-col gap-2 items-center w-full">
-                      <label className="w-full">
+                      <label className="text-start w-full">
                         <strong>Description</strong>
                       </label>
                       <textarea
