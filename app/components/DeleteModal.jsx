@@ -5,7 +5,7 @@ import { CgClose } from "react-icons/cg";
 import { useState, useEffect, forwardRef } from "react";
 import axios from "axios";
 
-function DeleteModalComponent({ setDraggable, note, reload, setReload }, ref) {
+function DeleteModalComponent({ setLoadingNoteID, setDraggable, note, reload, setReload }, ref) {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -13,9 +13,10 @@ function DeleteModalComponent({ setDraggable, note, reload, setReload }, ref) {
     try {
       setLoading(true);
       await axios.delete(`/api/note/${id}`);
+      setLoadingNoteID(note.id)
       setIsOpen(false);
       setReload(!reload);
-      setLoading(false);
+      //setLoading(false);
     } catch (error) {
       setLoading(false);
       console.log(error);

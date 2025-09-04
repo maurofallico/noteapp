@@ -49,11 +49,6 @@ export default function Note({
     }
   }
 
-/*   useEffect(() => {
-    console.log('note: ', note)
-    console.log('loadingNoteID: ', loadingNoteID)
-  }, [note, loadingNoteID]) */
-
   return (
     <>
       <div
@@ -90,6 +85,7 @@ export default function Note({
                       setReload={setReload}
                       note={note}
                       setNotes={setNotes}
+                      setLoadingNoteID={setLoadingNoteID}
                     />
                   </div>
                   </div>
