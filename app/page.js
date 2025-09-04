@@ -22,10 +22,7 @@ export default function Home() {
   const [userId, setUserId] = useState(undefined);
 
   const [loadingNoteID, setLoadingNoteID] = useState();
-
-/*   async function updateNote() {
-    console.log('loadingNote: ', loadingNoteID)
-  } */
+  const [loadingListID, setLoadingListID] = useState();
 
   useEffect(() => {
     async function fetchAll() {
@@ -57,6 +54,7 @@ export default function Home() {
       } finally {
         setLoading(false);
         setLoadingNoteID();
+        setLoadingListID()
         
       }
     }
@@ -68,10 +66,6 @@ export default function Home() {
       setUserId(undefined)
     }
   }, [reload, user]);
-
-/*   useEffect(() => {
-    console.log(loadingNoteID)
-  }, [loadingNoteID]) */
 
   return (
     <div className="overflow-x-hidden bg-gray-300 h-fit">
@@ -103,6 +97,8 @@ export default function Home() {
             setLoading={setLoading}
             loadingNoteID={loadingNoteID}
             setLoadingNoteID={setLoadingNoteID}
+            loadingListID={loadingListID}
+            setLoadingListID={setLoadingListID}
           />
         </div>
       </div>
