@@ -21,7 +21,7 @@ export default function SearchBar({ setFilters, reload }) {
 
   async function getFilters() {
     try {
-      const response = await axios.get('/api/notes', { params: { timestamp: new Date().getTime() } });
+      const response = await axios.get('/api/note', { params: { timestamp: new Date().getTime() } });
       const data = response.data;
       const newAllFilters = data.reduce((filters, note) => {
         note.category.forEach((category) => {
@@ -41,7 +41,7 @@ export default function SearchBar({ setFilters, reload }) {
  
   
   useEffect(() => {
-    getFilters();
+    //getFilters();
    }, [reload]);
 
   function removeFilter(fil, index) {
@@ -57,7 +57,7 @@ export default function SearchBar({ setFilters, reload }) {
       <div className="flex text-black flex-col justify-center items-center" >Filter by Categories 
       <div className="flex flex-row gap-2 mt-2">
       <select value={selected} onChange={(e) => setSelected(e.target.value)} className="border bg-white flex items-center justify-center h-fit pb-0.5 w-32">
-        <option value="null" className='bg-gray-200 ' disabled="true"></option>
+        <option value="null" className='bg-gray-200 ' disabled={true}></option>
       {allFilters?.map((filter, index) => ( 
               
               <option key={index}>{filter}</option>

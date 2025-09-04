@@ -1,25 +1,28 @@
-'use client'
+"use client";
 
 import DeleteModal from "./DeleteModal";
-import EditModal from "./EditModal"
-import axios from 'axios'
-import Masonry from 'react-masonry-css'
-import { IoMdArchive } from "react-icons/io";
-import { useState, useEffect } from "react";
+import EditModal from "./EditModal";
+import { useState, useEffect, useRef } from "react";
 
-export default function Note({selected, filter, reload, setReload}) {
+export default function Note({
+  draggable,
+  setDraggable,
+  note,
+  notes,
+  setNotes,
+  onDragStart,
+  selected,
+  filter,
+  reload,
+  setReload,
+  loading,
+  setLoading,
+}) {
+  const nodeRef = useRef(null);
+  const deleteRef = useRef(null);
 
-  const [loadingArchive, setLoadingArchive] = useState(false)
-  const [loading, setLoading] = useState(true)
-  
+  const [editOpen, setEditOpen] = useState(false);
 
-  const breakpoints = {
-    default: 3,
-    1023: 2,
-    639: 1
-  }
-  
-   const [notes, setNotes] = useState([""]); 
   const NoteColors = [
     "from-blue-200 to-blue-100",
     "from-green-200 to-green-100",
@@ -33,145 +36,64 @@ export default function Note({selected, filter, reload, setReload}) {
     "from-orange-200 to-orange-100",
   ];
 
-  const fetchNotes = async () => {
-    try {
-      let apiUrl = "/api/notes";
-
-      const queryParams = new URLSearchParams();
-
-      if (selected === 'archived') {
-        queryParams.append('archived', 'true');
-      }
-
-      if (filter && filter.length > 0) {
-        filter.slice(0, 3).forEach(category => {
-          queryParams.append('cat', category);
-        });
-      }
-
-      if (queryParams.toString().length > 0) {
-        apiUrl += `?${queryParams.toString()}`;
-      }
-      const response = await axios.get(apiUrl);
-      const data = await response.data
-       data.sort((a, b) => a.id - b.id);
-        
-      setNotes(data)
-      setLoading(false)
-    } catch (error) {
-      console.log(error)
+  function openEditModal(e) {
+    if (deleteRef.current && !deleteRef.current.contains(e.target) && draggable) {
+      setEditOpen(true);
+      setDraggable(false);
     }
-  };
-
-  useEffect(() => {
-    fetchNotes();
-  }, [selected, filter, reload])
-
-  const archiveFunction = async (noteId) => {
-    try {
-      setLoadingArchive((prevLoading) => ({
-        ...prevLoading,
-        [noteId]: true,
-      }));
-      const responseGet = await axios.get(`/api/notes/${noteId}`);
-      const archive = responseGet.data.archive;
-  
-      const updatedArchive = !archive;
-  
-      await axios.put(`/api/notes/${noteId}`, {
-        archive: updatedArchive,
-      });
-  
-      await fetchNotes()
-      setLoadingArchive((prevLoading) => ({
-        ...prevLoading,
-        [noteId]: false,
-      }));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  }
 
   return (
     <>
-      {loading ? (
-        <div className="w-screen h-screen justify-center items-start sm:mt-24 flex">
-        <span className="text-black loading loading-spinner loading-lg scale-150"></span>
+      <div
+        onClick={(e) => openEditModal(e)}
+        ref={nodeRef}
+        className="transition-all duration-200 ease-in-out border-2 border-gray-700 hover:border-2 hover:border-white sm:mb-0 mb-6 shadow-md sm:shadow-xl text-gray-200 bg-gradient-to-r w-fit text-sm sm:text-base sm:h-fit sm:rounded-2xl px-3 py-2 bg-gray-700 cursor-pointer"
+      >
+        <div className="flex flex-row mb-4">
+          <div className="flex items-start flex-row w-[283px] gap-8">
+            {note.category?.map((cat, index) => (
+              <div key={index} className="flex">
+                <p className="bg-gray-400 text-black px-2 border border-black border-opacity-20 rounded-lg">
+                  #{cat}
+                </p>
+              </div>
+            ))}
+            <p className="text-lg w-[200px] break-words">
+              <strong>{note.title}</strong>
+            </p>
+            <div className="flex items-center py-1 w-full place-content-end text-lg gap-1">
+              <EditModal
+                setDraggable={setDraggable}
+                reload={reload}
+                setReload={setReload}
+                note={note}
+                setNotes={setNotes}
+                isOpen={editOpen}
+                setIsOpen={setEditOpen}
+              />
+              <DeleteModal
+                setDraggable={setDraggable}
+                ref={deleteRef}
+                reload={reload}
+                setReload={setReload}
+                note={note}
+                setNotes={setNotes}
+                loading={loading}
+                setLoading={setLoading}
+              />
+            </div>
+          </div>
         </div>
-      ) : (
-        <div className="text-black w-screen flex flex-col gap-y-8 sm:gap-y-4">
-          <Masonry
-            breakpointCols={breakpoints}
-            className="my-masonry-grid"
-            columnClassName="my-masonry-grid_column"
-          >
-            {notes &&
-              notes.length > 0 &&
-              notes?.map((note, index) => (
-                <div
-                  key={index}
-                  className={`sm:mb-0 mb-6 shadow-md sm:shadow-xl bg-gradient-to-r 2xl:w-[435px] xl:w-[400px] lg:w-[320px] md:w-[380px] sm:w-[300px] xs:w-[500px] text-sm sm:text-base xs:text-xl w-screen xs:h-[250px] sm:h-fit sm:rounded-2xl px-3 py-2  ${NoteColors[
-                    note.id % NoteColors.length
-                  ]}`}
-                >
-                  <div className="flex flex-row justify-between gap-8 mb-4">
-                    <div className="flex flex-col gap-2">
-                      {note.category?.map((cat, index) => (
-                        <div key={index} className="flex">
-                          <p className="bg-yellow-100 px-2 border border-black border-opacity-20 rounded-lg">
-                            #{cat}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-lg xs:text-xl text-center h-fit">
-                      <strong>{note.title}</strong>
-                    </p>
-                    <div className="flex gap-2 items-start text-xl xs:text-2xl">
-                      {loadingArchive[note.id] ? (
-                        <span className="text-black loading loading-spinner loading-sm"></span>
-                      ) : (
-                        <button
-                          title="Archive"
-                          onMouseOver={(e) => e.target.focus()}
-                          onClick={() => {
-                            archiveFunction(note.id);
-                          }}
-                        >
-                          <IoMdArchive
-                            className={note.archive ? "text-green-500" : ""}
-                          />
-                        </button>
-                      )}
-                      <EditModal
-                        reload={reload}
-                        setReload={setReload}
-                        noteId={note.id}
-                      />
-                      <DeleteModal
-                        reload={reload}
-                        setReload={setReload}
-                        noteId={note.id}
-                        loading={loading}
-                        setLoading={setLoading}
-                      />
-                    </div>
-                  </div>
-                  <div className="h-full items-start">
-                    <p
-                      className="flex text-pretty px-2 text-md mb-3 overflow-hidden max-h-fit "
-                      dangerouslySetInnerHTML={{
-                        __html: note.content
-                          ? note.content.replace(/\n/g, "<br />")
-                          : "",
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-          </Masonry>
+        <div className="h-full items-start">
+          <p
+            className="flex text-pretty px-2 text-md mb-3 overflow-hidden max-h-fit "
+            dangerouslySetInnerHTML={{
+              __html: note.content ? note.content.replace(/\n/g, "<br />") : "",
+            }}
+          />
         </div>
-      )}
+      </div>
     </>
   );
 }
