@@ -68,7 +68,6 @@ export default function Home() {
             reload={reload}
             setReload={setReload}
           />
-          {/* <SearchBar setFilters={setFilters} reload={reload} /> */}
         </div>
 
         <div className="mt-8 flex flex-col gap-x-4 gap-y-8 pb-16 ">

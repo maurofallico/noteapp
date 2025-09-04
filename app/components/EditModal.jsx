@@ -65,10 +65,12 @@ useEffect(() => {
         setTitle(data.title);
         setCategoryList((prev) => [...prev, ...data.category]);
         setContent(data.content);
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.log(error);
       } finally {
-        setLoading(false);
+        
       }
     }
     fetchNote();
@@ -141,68 +143,6 @@ useEffect(() => {
                     <br></br>
                   </p>
                 )}
-                {/* <div className="flex flex-col gap-0 items-end">
-                  <div className="flex flex-row gap-4 ">
-                    <label>
-                      <strong>Categories</strong>
-                    </label>
-                    <input
-                      name="category"
-                      onChange={(e) => setCategory(e.target.value)}
-                      value={category}
-                      className="bg-gray-50 px-1 border rounded border-black w-64"
-                      disabled={categoryList.length >= 3}
-                    ></input>
-                  </div>
-                  <div className="flex flex-col mt-1 items-end w-full">
-                    {categoryError ? (
-                      <p className="text-xs self-start ml-24 text-red-500">
-                        Category cannot be empty.
-                      </p>
-                    ) : (
-                      <p className="text-xs self-start ml-24">
-                        <br></br>
-                      </p>
-                    )}
-                    <button
-                      onClick={() => addCategory()}
-                      disabled={categoryList.length >= 3}
-                      className={`${
-                        categoryList.length >= 3
-                          ? "text-xs border border-black rounded-xl px-2 py-1 opacity-50"
-                          : "text-xs border border-black rounded-xl px-2 py-1 bg-gray-100 hover:bg-gray-200"
-                      }`}
-                    >
-                      Add Category
-                    </button>
-                    <div className="flex text-pretty text-end">
-                      {categoryList?.length > 0 ? (
-                        <span className="flex gap-2 mt-2 text-xs">
-                          {categoryList.map((cat, index) => (
-                            <div
-                              key={index}
-                              className="flex gap-1 flex-row border bg-yellow-100 border-opacity-20 border-black rounded-xl px-2 py-1"
-                            >
-                              #{cat}
-                              <button
-                                className="flex self-center mt-[0.8px]"
-                                onClick={() => {
-                                  removeCategory(index);
-                                }}
-                              >
-                                <CgClose className="text-red-500 font-bold text-base" />
-                              </button>
-                            </div>
-                          ))}
-                        </span>
-                      ) : (
-                        <div className="mt-2.5">
-                          <br></br>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div> */}
                 <div className="flex flex-col w-full gap-4">
                   <div className="flex flex-col gap-2 items-center w-full">
                     <label className="w-full">
