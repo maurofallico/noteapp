@@ -79,8 +79,6 @@ export default function Note({
                 setReload={setReload}
                 note={note}
                 setNotes={setNotes}
-                loading={loading}
-                setLoading={setLoading}
               />
             </div>
           </div>

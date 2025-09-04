@@ -5,16 +5,14 @@ import { CgClose } from "react-icons/cg";
 import { useState, useEffect, forwardRef } from "react";
 import axios from "axios";
 
-//const DeleteModal = forwardRef(({ note, ...props }, ref) => {
 function DeleteModalComponent(
-  { setDraggable, note, reload, setReload, loading, setLoading },
+  { setDraggable, note, reload, setReload },
   ref
 ) {
   const [isOpen, setIsOpen] = useState(false);
 
   async function deleteNote(id) {
     try {
-      setLoading(true);
       await axios.delete(`/api/note/${id}`);
       setIsOpen(false);
       setReload(!reload);

@@ -23,7 +23,6 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchAll() {
-      setLoading(true);
 
       if (user === null) {
         setNotes([]);
@@ -88,7 +87,6 @@ export default function Home() {
             setReload={setReload}
             loading={loading}
             setLoading={setLoading}
-            loading2={loading2}
           />
         </div>
       </div>
