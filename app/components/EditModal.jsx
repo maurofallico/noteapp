@@ -110,66 +110,70 @@ useEffect(() => {
   }
 
   return (
-    <div className="cursor-default">
-      {/* <button title="Edit" onMouseOver={(e) => e.target.focus()} onClick={() => handleEdit(note.id)} className="h-fit">
-        <FaRegEdit />
-      </button> */}
-      {isOpen ? (
-        <div className="text-gray-300 fixed inset-0 bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
-          {loading? (<div className="w-screen h-screen justify-center items-center flex">
-        <span className="loading loading-spinner loading-lg scale-150"></span>
-        </div>) : (<div className="bg-gray-800 shadow-2xl border-2 border-slate-700 p-3 sm:rounded-xl flex flex-col items-center gap-2 w-screen sm:w-[450px] h-[460px]">
-            <button onClick={(e) => {
-              cancelEdit()
-              e.stopPropagation()}
-              }
-              className="flex self-end">
-              <CgClose className="hover:text-red-600 text-lg" />
-            </button>
-            <div className="w-full">
-              <div className="w-full flex flex-col gap-2 items-end text-base px-8">
+  <div className="cursor-default">
+    {isOpen && (
+      <div className="text-gray-300 fixed inset-0 bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
+        <div className="bg-gray-800 shadow-2xl border-2 border-slate-700 p-3 sm:rounded-xl flex flex-col items-center gap-2 w-screen sm:w-[450px] h-[460px]">
+          {loading ? (
+            <div className="w-screen h-screen justify-center items-center flex">
+              <span className="loading loading-spinner loading-lg scale-150"></span>
+            </div>
+          ) : (
+            <>
+              <button
+                onClick={(e) => {
+                  cancelEdit();
+                  e.stopPropagation();
+                }}
+                className="flex self-end"
+              >
+                <CgClose className="hover:text-red-600 text-lg" />
+              </button>
+              <div className="w-full">
+                <div className="w-full flex flex-col gap-2 items-end text-base px-8">
                   <input
                     name="title"
                     onChange={handleChange}
                     value={title}
                     className="bg-transparent px-1.5 py-0.5 w-full text-2xl"
-                  ></input>
-                {titleError ? (
-                  <p className="text-xs text-red-500 self-start ml-24">
-                    Title cannot be empty.
-                  </p>
-                ) : (
-                  <p className="text-xs">
-                    <br></br>
-                  </p>
-                )}
-                <div className="flex flex-col w-full gap-4">
-                  <div className="flex flex-col gap-2 items-center w-full">
-                    <label className="w-full">
-                      <strong>Description</strong>
-                    </label>
-                    <textarea
-                      placeholder="Add a more detailed description..."
-                      name="content"
-                      onChange={handleChange}
-                      value={content}
-                      className="bg-transparent px-2 py-1 rounded border border-gray-300 w-full h-48"
-                    ></textarea>
+                  />
+                  {titleError ? (
+                    <p className="text-xs text-red-500 self-start ml-24">
+                      Title cannot be empty.
+                    </p>
+                  ) : (
+                    <p className="text-xs">
+                      <br />
+                    </p>
+                  )}
+                  <div className="flex flex-col w-full gap-4">
+                    <div className="flex flex-col gap-2 items-center w-full">
+                      <label className="w-full">
+                        <strong>Description</strong>
+                      </label>
+                      <textarea
+                        placeholder="Add a more detailed description..."
+                        name="content"
+                        onChange={handleChange}
+                        value={content}
+                        className="bg-transparent px-2 py-1 rounded border border-gray-300 w-full h-48"
+                      />
+                    </div>
+                    <button
+                      onClick={onSubmit}
+                      className="text-black border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-1 self-end mt-2"
+                    >
+                      Update
+                    </button>
                   </div>
-                  <button
-                    onClick={() => {
-                      onSubmit();
-                    }}
-                    className="text-black border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-1 self-end mt-2"
-                  >
-                    Update
-                  </button>
                 </div>
               </div>
-            </div>
-          </div>)}
+            </>
+          )}
         </div>
-      ) : null}
-    </div>
-  );
+      </div>
+    )}
+  </div>
+);
+
 }
