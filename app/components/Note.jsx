@@ -49,6 +49,11 @@ export default function Note({
     }
   }
 
+/*   useEffect(() => {
+    console.log('note: ', note)
+    console.log('loadingNoteID: ', loadingNoteID)
+  }, [note, loadingNoteID]) */
+
   return (
     <>
       <div

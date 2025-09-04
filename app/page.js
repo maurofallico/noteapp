@@ -23,6 +23,10 @@ export default function Home() {
 
   const [loadingNoteID, setLoadingNoteID] = useState();
 
+/*   async function updateNote() {
+    console.log('loadingNote: ', loadingNoteID)
+  } */
+
   useEffect(() => {
     async function fetchAll() {
 
@@ -35,23 +39,24 @@ export default function Home() {
       }
 
       try {
-        setLoadingNoteID()
+
         const userResponse = await axios.get(`/api/user?email=${user.email}`);
         const id = userResponse.data.id;
         if (!id) return;
-        setLoadingNoteID(id)
+
         const listsResponse = await axios.get(`/api/list?userId=${id}`);
 
         setUserId(id);
         setLists(listsResponse.data.sort((a, b) => a.id - b.id));
-        //setLoadingNoteID()
+        await updateNote()
       } catch (err) {
         console.error(err);
         setNotes([]);
         setLists([]);
-        setLoadingNoteID()
+
       } finally {
         setLoading(false);
+        setLoadingNoteID();
         
       }
     }
