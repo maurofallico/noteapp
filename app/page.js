@@ -48,7 +48,7 @@ export default function Home() {
 
         setUserId(id);
         setLists(listsResponse.data.sort((a, b) => a.id - b.id));
-        await updateNote()
+
       } catch (err) {
         console.error(err);
         setNotes([]);

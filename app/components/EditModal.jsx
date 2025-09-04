@@ -98,7 +98,7 @@ useEffect(() => {
           setIsOpen(false);
           setDraggable(true);
           setReload(!reload);
-          setLoading(false)
+          //setLoading(false)
         } catch (error) {
           console.log(error);
         }
