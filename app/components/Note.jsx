@@ -64,7 +64,7 @@ export default function Note({
               </div>
               
             ) : (
-              <div className="flex flex-col w-full">
+              <div className="flex flex-col w-full gap-3">
                 <div className="flex flex-row w-full">
                   <span className="text-start w-full"><strong>{note.title}</strong></span>
                   <div className="flex flex-row w-fit place-content-start text-lg gap-1">
@@ -92,7 +92,7 @@ export default function Note({
 
                   <div className="h-full items-start">
                     <p
-                      className="flex text-pretty px-2 text-md mb-3 overflow-hidden max-h-fit "
+                      className="flex text-start text-sm text-pretty px-2 text-md mb-3 overflow-hidden max-h-fit "
                       dangerouslySetInnerHTML={{
                         __html: note.content
                           ? note.content.replace(/\n/g, "<br />")
