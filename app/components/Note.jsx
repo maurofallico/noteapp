@@ -65,9 +65,9 @@ export default function Note({
               
             ) : (
               <div className="flex flex-col w-full">
-                <div className="flex flex-row">
-                  <strong>{note.title}</strong>
-                  <div className="flex flex-row items-censter py-1 w-full place-content-end text-lg gap-1">
+                <div className="flex flex-row w-full">
+                  <span className="text-start w-full"><strong>{note.title}</strong></span>
+                  <div className="flex flex-row w-fit place-content-start text-lg gap-1">
                     <EditModal
                       setDraggable={setDraggable}
                       reload={reload}
