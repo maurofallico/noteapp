@@ -42,12 +42,12 @@ export default function Board({
   async function deleteList() {
     try {
       //setLoading(true);
+      setLoadingListID(deleteID);
       await axios.delete(`api/list/${deleteID}`);
       const newLists = lists.filter((list) => list.id !== deleteID);
       setLists(newLists);
       setDeleteModal(false);
       setDraggable(true);
-      setLoadingListID(deleteID);
       //setLoading(false)
       //setReload(!reload);
     } catch (error) {
