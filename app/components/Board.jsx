@@ -39,17 +39,16 @@ export default function Board({
 
   const [editingListId, setEditingListId] = useState(null);
 
+  const [loadingCreate, setLoadingCreate] = useState(false);
+
   async function deleteList() {
     try {
-      //setLoading(true);
       setLoadingListID(deleteID);
       await axios.delete(`api/list/${deleteID}`);
       const newLists = lists.filter((list) => list.id !== deleteID);
       setLists(newLists);
       setDeleteModal(false);
       setDraggable(true);
-      //setLoading(false)
-      //setReload(!reload);
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -158,7 +157,7 @@ export default function Board({
     if (!newListText.trim()) return;
     try {
       setCreatingList(false);
-      setLoading(true);
+      setLoadingCreate(true);
       const response = await axios.post("api/list", {
         name: newListText,
         userID: userId,
@@ -166,12 +165,12 @@ export default function Board({
       const newList = response.data;
 
       setLists((prev) => [...prev, newList]);
-      
+
       setNewListText("");
-      setLoading(false)
+      setLoadingCreate(false);
     } catch (error) {
       console.log(error);
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -350,31 +349,39 @@ export default function Board({
                 ))}
                 {creatingList ? (
                   <div className="h-[120px] py-4 px-4 bg-gray-800 p-2 rounded-lg flex flex-col gap-4">
-                    <input
-                      ref={listInputRef}
-                      type="text"
-                      placeholder="New list..."
-                      className="px-2 py-1 rounded-md text-white"
-                      value={newListText}
-                      onChange={(e) => setNewListText(e.target.value)}
-                    />
-                    <div className="flex gap-2">
-                      <button
-                        className="bg-green-600 px-2 py-1 rounded-md text-white"
-                        onClick={() => confirmCreateList()}
-                      >
-                        Create
-                      </button>
-                      <button
-                        className="bg-red-600 px-2 py-1 rounded-md text-white"
-                        onClick={() => {
-                          setNewListText("");
-                          setCreatingList(false);
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                    {!loadingCreate ? (
+                      <span>
+                        <span className="loading loading-spinner loading-lg scale-125 text-white"></span>
+                      </span>
+                    ) : (
+                      <div className="flex flex-col gap-4">
+                        <input
+                          ref={listInputRef}
+                          type="text"
+                          placeholder="New list..."
+                          className="px-2 py-1 rounded-md text-white"
+                          value={newListText}
+                          onChange={(e) => setNewListText(e.target.value)}
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            className="bg-green-600 px-2 py-1 rounded-md text-white"
+                            onClick={() => confirmCreateList()}
+                          >
+                            Create
+                          </button>
+                          <button
+                            className="bg-red-600 px-2 py-1 rounded-md text-white"
+                            onClick={() => {
+                              setNewListText("");
+                              setCreatingList(false);
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : lists ? (
                   <button
@@ -392,44 +399,45 @@ export default function Board({
             <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
               <div className="text-black bg-blue-50 shadow-2xl border-2 border-slate-700 p-3 sm:rounded-xl flex flex-col items-center gap-2 w-screen sm:w-[460px] h-[140px]">
                 {loadingListID ? (
-              <span className="text-black loading loading-spinner loading-lg scale-125"></span>
-            ) : (
-                <div className="flex flex-col w-full items-center">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setDeleteModal(false);
-                    setDraggable(true);
-                  }}
-                  className="flex self-end"
-                >
-                  <CgClose className="hover:text-red-600 text-lg" />
-                </button>
-                <p className="sm:text-lg text-sm">
-                  Are you sure you want to delete this list?
-                </p>
-                <div className="sm:text-lg text-sm flex gap-8 mt-2 sm:mt-3">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteList();
-                    }}
-                    className="border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-0.5 self-center mt-1"
-                  >
-                    Yes
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDeleteModal(false);
-                      setDraggable(true);
-                    }}
-                    className="border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-0.5 self-center mt-1"
-                  >
-                    No
-                  </button>
-                </div>
-              </div>)}
+                  <span className="text-black loading loading-spinner loading-lg scale-125"></span>
+                ) : (
+                  <div className="flex flex-col w-full items-center">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteModal(false);
+                        setDraggable(true);
+                      }}
+                      className="flex self-end"
+                    >
+                      <CgClose className="hover:text-red-600 text-lg" />
+                    </button>
+                    <p className="sm:text-lg text-sm">
+                      Are you sure you want to delete this list?
+                    </p>
+                    <div className="sm:text-lg text-sm flex gap-8 mt-2 sm:mt-3">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteList();
+                        }}
+                        className="border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-0.5 self-center mt-1"
+                      >
+                        Yes
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteModal(false);
+                          setDraggable(true);
+                        }}
+                        className="border bg-gray-100 hover:bg-gray-200 border-black rounded-xl px-3 py-0.5 self-center mt-1"
+                      >
+                        No
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ) : null}
