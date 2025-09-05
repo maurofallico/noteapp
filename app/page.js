@@ -24,6 +24,9 @@ export default function Home() {
   const [loadingNoteID, setLoadingNoteID] = useState();
   const [loadingListID, setLoadingListID] = useState();
 
+  const [creatingNote, setCreatingNote] = useState();
+  const [loadingCreate, setLoadingCreate] = useState();
+
   useEffect(() => {
     async function fetchAll() {
 
@@ -54,7 +57,9 @@ export default function Home() {
       } finally {
         setLoading(false);
         setLoadingNoteID();
-        setLoadingListID()
+        setLoadingListID();
+        setCreatingNote(false);
+        setLoadingCreate(false)
         
       }
     }
@@ -99,6 +104,10 @@ export default function Home() {
             setLoadingNoteID={setLoadingNoteID}
             loadingListID={loadingListID}
             setLoadingListID={setLoadingListID}
+            creatingNote={creatingNote}
+            setCreatingNote={setCreatingNote}
+            loadingCreate={loadingCreate}
+            setLoadingCreate={setLoadingCreate}
           />
         </div>
       </div>

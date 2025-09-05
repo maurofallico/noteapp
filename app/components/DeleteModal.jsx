@@ -12,8 +12,8 @@ function DeleteModalComponent({ setLoadingNoteID, setDraggable, note, reload, se
   async function deleteNote(id) {
     try {
       setLoading(true);
-      await axios.delete(`/api/note/${id}`);
       setLoadingNoteID(note.id)
+      await axios.delete(`/api/note/${id}`);
       setIsOpen(false);
       setReload(!reload);
       //setLoading(false);
@@ -42,7 +42,7 @@ function DeleteModalComponent({ setLoadingNoteID, setDraggable, note, reload, se
         <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
           <div className="text-black bg-blue-50 shadow-2xl border-2 border-slate-700 p-3 sm:rounded-xl flex flex-col items-center justify-center gap-2 w-screen sm:w-[460px] h-[140px]">
             {loading ? (
-              <span className="text-black loading loading-spinner loading-lg scale-125"></span>
+                <span className="text-black loading loading-spinner loading-lg scale-125"></span>
             ) : (
               <div className="flex flex-col w-full items-center">
                 <button

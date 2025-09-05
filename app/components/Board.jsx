@@ -21,12 +21,16 @@ export default function Board({
   setLoadingNoteID,
   loadingListID,
   setLoadingListID,
+  creatingNote,
+  setCreatingNote,
+  loadingCreate,
+  setLoadingCreate
 }) {
   const noteInputRef = useRef(null);
   const listInputRef = useRef(null);
   const listInputEditRef = useRef(null);
 
-  const [creatingNote, setCreatingNote] = useState(null);
+  //const [creatingNote, setCreatingNote] = useState(null);
   const [creatingList, setCreatingList] = useState(false);
 
   const [newNoteText, setNewNoteText] = useState("");
@@ -39,7 +43,7 @@ export default function Board({
 
   const [editingListId, setEditingListId] = useState(null);
 
-  const [loadingCreate, setLoadingCreate] = useState(false);
+  //const [loadingCreate, setLoadingCreate] = useState(false);
 
   async function deleteList() {
     try {
@@ -179,6 +183,7 @@ export default function Board({
     if (!newNoteText.trim()) return;
 
     try {
+      setLoadingCreate(true);
       const response = await axios.post("/api/note", {
         listID: columnID,
         title: newNoteText,
@@ -193,8 +198,6 @@ export default function Board({
         content: "",
         listID: columnID,
       };
-
-      setCreatingNote(null);
       setNotes((prev) => [...prev, newNote]);
       setReload(!reload);
       setNewNoteText("");
@@ -202,6 +205,10 @@ export default function Board({
       console.error("Error creando nota:", err);
     }
   }
+
+  useEffect(() => {
+    console.log(loadingCreate)
+  }, [loadingCreate])
 
   return (
     <>
@@ -224,7 +231,7 @@ export default function Board({
                         className="bg-black flex flex-col items-center w-[330px] py-3 px-4 rounded-xl h-fit gap-4 "
                       >
                         <div className="flex flex-col w-full gap-6">
-                          {loadingListID != list.id ? (
+                          { loadingListID != list.id ? (
                             <div className="flex items-center justify-between w-full">
                               {editingListId === list.id ? (
                                 <input
@@ -308,31 +315,39 @@ export default function Board({
                             </div>
 
                             {creatingNote === list.id ? (
-                              <div className="bg-gray-800 p-2 rounded-lg flex flex-col gap-2">
-                                <input
-                                  ref={noteInputRef}
-                                  type="text"
-                                  placeholder="New task..."
-                                  className="px-2 py-1 rounded-md text-white"
-                                  value={newNoteText}
-                                  onChange={(e) =>
-                                    setNewNoteText(e.target.value)
-                                  }
-                                />
-                                <div className="flex gap-2">
-                                  <button
-                                    className="bg-green-600 px-2 py-1 rounded-md text-white"
-                                    onClick={() => confirmCreateNote(list.id)}
-                                  >
-                                    Create
-                                  </button>
-                                  <button
-                                    className="bg-red-600 px-2 py-1 rounded-md text-white"
-                                    onClick={() => setCreatingNote(null)}
-                                  >
-                                    Cancel
-                                  </button>
-                                </div>
+                              <div>
+                                {loadingCreate ? (
+                                  <span className="loading loading-spinner loading-lg scale-125 text-white"></span>
+                                ) : (
+                                  <div className="bg-gray-800 p-2 rounded-lg flex flex-col gap-5">
+                                    <input
+                                      ref={noteInputRef}
+                                      type="text"
+                                      placeholder="New task..."
+                                      className="px-2 py-1 rounded-md text-white"
+                                      value={newNoteText}
+                                      onChange={(e) =>
+                                        setNewNoteText(e.target.value)
+                                      }
+                                    />
+                                    <div className="flex gap-2">
+                                      <button
+                                        className="bg-green-600 px-2 py-1 rounded-md text-white"
+                                        onClick={() =>
+                                          confirmCreateNote(list.id)
+                                        }
+                                      >
+                                        Create
+                                      </button>
+                                      <button
+                                        className="bg-red-600 px-2 py-1 rounded-md text-white"
+                                        onClick={() => setCreatingNote(null)}
+                                      >
+                                        Cancel
+                                      </button>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             ) : loadingListID != list.id ? (
                               <button
@@ -400,7 +415,9 @@ export default function Board({
             <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
               <div className="text-black bg-blue-50 shadow-2xl border-2 border-slate-700 p-3 sm:rounded-xl flex flex-col items-center gap-2 w-screen sm:w-[460px] h-[140px]">
                 {loadingListID ? (
+                                <div className="flex w-full h-full justify-center items-center">
                   <span className="text-black loading loading-spinner loading-lg scale-125"></span>
+                  </div>
                 ) : (
                   <div className="flex flex-col w-full items-center">
                     <button
