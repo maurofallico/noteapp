@@ -28,6 +28,7 @@ export default function Home() {
   const [loadingCreate, setLoadingCreate] = useState();
 
   useEffect(() => {
+    setLoading(true)
     async function fetchAll() {
 
       if (user === null) {
