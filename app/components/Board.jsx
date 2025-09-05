@@ -156,7 +156,7 @@ export default function Board({
   async function confirmCreateList() {
     if (!newListText.trim()) return;
     try {
-      setCreatingList(false);
+      
       setLoadingCreate(true);
       const response = await axios.post("api/list", {
         name: newListText,
@@ -165,7 +165,7 @@ export default function Board({
       const newList = response.data;
 
       setLists((prev) => [...prev, newList]);
-
+      setCreatingList(false);
       setNewListText("");
       setLoadingCreate(false);
     } catch (error) {
