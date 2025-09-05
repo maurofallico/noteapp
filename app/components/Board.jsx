@@ -349,7 +349,7 @@ export default function Board({
                 ))}
                 {creatingList ? (
                   <div className="h-[120px] py-4 px-4 bg-gray-800 p-2 rounded-lg flex flex-col gap-4">
-                    {!loadingCreate ? (
+                    {loadingCreate ? (
                       <span>
                         <span className="loading loading-spinner loading-lg scale-125 text-white"></span>
                       </span>
