@@ -206,10 +206,6 @@ export default function Board({
     }
   }
 
-  useEffect(() => {
-    console.log(loadingCreate)
-  }, [loadingCreate])
-
   return (
     <>
       {!loading ? (
