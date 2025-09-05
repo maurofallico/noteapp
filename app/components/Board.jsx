@@ -49,6 +49,7 @@ export default function Board({
       setLists(newLists);
       setDeleteModal(false);
       setDraggable(true);
+      setLoadingListID();
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -348,11 +349,11 @@ export default function Board({
                   </Droppable>
                 ))}
                 {creatingList ? (
-                  <div className="h-[120px] py-4 px-4 bg-gray-800 p-2 rounded-lg flex flex-col gap-4">
+                  <div className="h-[120px] w-[330px] py-4 px-4 bg-gray-800 p-2 rounded-lg flex flex-col gap-4">
                     {loadingCreate ? (
-                      <span>
+                      <div className="flex justify-center items-center h-full">
                         <span className="loading loading-spinner loading-lg scale-125 text-white"></span>
-                      </span>
+                      </div>
                     ) : (
                       <div className="flex flex-col gap-4">
                         <input
@@ -386,9 +387,9 @@ export default function Board({
                 ) : lists ? (
                   <button
                     onClick={() => setCreatingList(true)}
-                    className="h-[40px] bg-gray-700 transition-all duration-200 ease-in-out px-2 text-start text-gray-200 w-[200px] rounded-lg pb-2 pt-1 hover:bg-gray-800"
+                    className="h-[40px] bg-gray-700 transition-all duration-200 ease-in-out px-6 text-start text-gray-200 w-[330px] rounded-lg pb-2 pt-1 hover:bg-gray-800"
                   >
-                    + Add List
+                    + Add list
                   </button>
                 ) : null}
               </div>
