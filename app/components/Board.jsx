@@ -41,14 +41,14 @@ export default function Board({
 
   async function deleteList() {
     try {
-      setLoading(true)
+      //setLoading(true);
       await axios.delete(`api/list/${deleteID}`);
       const newLists = lists.filter((list) => list.id !== deleteID);
       setLists(newLists);
       setDeleteModal(false);
       setDraggable(true);
       setLoadingListID(deleteID);
-      setReload(!reload);
+      //setReload(!reload);
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -155,15 +155,23 @@ export default function Board({
 
   async function confirmCreateList() {
     if (!newListText.trim()) return;
-    const response = await axios.post("api/list", {
-      name: newListText,
-      userID: userId,
-    });
-    const newList = response.data;
+    try {
+      setCreatingList(false);
+      setLoading(true);
+      const response = await axios.post("api/list", {
+        name: newListText,
+        userID: userId,
+      });
+      const newList = response.data;
 
-    setLists((prev) => [...prev, newList]);
-    setCreatingList(false);
-    setNewListText("");
+      setLists((prev) => [...prev, newList]);
+      
+      setNewListText("");
+      setLoading(false)
+    } catch (error) {
+      console.log(error);
+      setLoading(false)
+    }
   }
 
   async function confirmCreateNote(columnID) {
@@ -256,9 +264,11 @@ export default function Board({
                                 </button>
                               </div>
                             </div>
-                          ) : <div className="flex items-center justify-center mt-4">
+                          ) : (
+                            <div className="flex items-center justify-center mt-4">
                               <span className="loading loading-spinner loading-lg scale-125 text-white"></span>
-                            </div>}
+                            </div>
+                          )}
 
                           <div className="flex flex-col gap-4 w-full">
                             <div className="flex flex-col w-full gap-2">
@@ -330,7 +340,7 @@ export default function Board({
                               >
                                 + Add task
                               </button>
-                            ) : (null)}
+                            ) : null}
                           </div>
                         </div>
                       </div>
