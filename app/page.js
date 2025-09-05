@@ -28,7 +28,6 @@ export default function Home() {
   const [loadingCreate, setLoadingCreate] = useState();
 
   useEffect(() => {
-    setLoading(true)
     async function fetchAll() {
 
       if (user === null) {
@@ -49,11 +48,13 @@ export default function Home() {
 
         setUserId(id);
         setLists(listsResponse.data.sort((a, b) => a.id - b.id));
+        setLoading(false)
 
       } catch (err) {
         console.error(err);
         setNotes([]);
         setLists([]);
+        setLoading(false)
 
       } finally {
         setLoading(false);
@@ -70,8 +71,13 @@ export default function Home() {
     }
     else{
       setUserId(undefined)
+      setLoading(false)
     }
   }, [reload, user]);
+
+  useEffect(() => {
+    if (user) setLoading(true)
+  }, [user])
 
   return (
     <div className="overflow-x-hidden bg-gray-300 h-fit">
