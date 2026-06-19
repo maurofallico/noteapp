@@ -25,9 +25,16 @@ export async function GET(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
+
+    console.log({
+  apiKey: request.headers.get("x-api-key"),
+  envKey: process.env.ADMIN_API_KEY,
+  auth: request.headers.get("authorization"),
+});
+
     const { userId } = params;
     const apiKey = request.headers.get("x-api-key");
-    
+
     if (apiKey !== process.env.ADMIN_API_KEY) {
       const authHeader = request.headers.get("authorization");
 
