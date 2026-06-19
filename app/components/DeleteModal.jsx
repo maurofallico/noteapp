@@ -4,16 +4,26 @@ import { AiFillDelete } from "react-icons/ai";
 import { CgClose } from "react-icons/cg";
 import { useState, useEffect, forwardRef } from "react";
 import axios from "axios";
+import { UserAuth } from "@/context/AuthContext";
 
 //const DeleteModal = forwardRef(({ note, ...props }, ref) => {
 const DeleteModal = forwardRef(
   ({ setDraggable, note, reload, setReload, loading, setLoading }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
+    const { user } = UserAuth();
+
 
     async function deleteNote(id) {
       try {
         setLoading(true);
-        await axios.delete(`/api/note/${id}`);
+        const token = await user.getIdToken();
+
+        await axios.delete(`/api/note/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         setIsOpen(false);
         setReload(!reload);
       } catch (error) {
@@ -25,7 +35,7 @@ const DeleteModal = forwardRef(
       if (isOpen) {
         setDraggable(false)
       }
-      else{
+      else {
         setDraggable(true)
       }
     }, [isOpen])

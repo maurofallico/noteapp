@@ -6,6 +6,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import axios from "axios";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { CgClose } from "react-icons/cg";
+import { UserAuth } from "@/context/AuthContext";
 
 export default function Board({
   userId,
@@ -22,6 +23,8 @@ export default function Board({
   const listInputRef = useRef(null);
   const listInputEditRef = useRef(null);
 
+  const { user } = UserAuth();
+
   const [creatingNote, setCreatingNote] = useState(null);
   const [creatingList, setCreatingList] = useState(false);
 
@@ -36,7 +39,12 @@ export default function Board({
   const [editingListId, setEditingListId] = useState(null);
 
   async function deleteList() {
-    await axios.delete(`api/list/${deleteID}`);
+    const token = await user.getIdToken();
+    await axios.delete(`/api/list/${deleteID}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const newLists = lists.filter((list) => list.id !== deleteID);
     setLists(newLists);
     setDeleteModal(false);

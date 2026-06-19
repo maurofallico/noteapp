@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { adminAuth } from "@/lib/firebaseAdmin";
 
 const prisma = new PrismaClient();
 
@@ -39,6 +40,73 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const { listId } = params;
+    const apiKey = request.headers.get("x-api-key");
+
+    if (apiKey !== process.env.ADMIN_API_KEY) {
+      const authHeader = request.headers.get("authorization");
+
+      if (!authHeader?.startsWith("Bearer ")) {
+        return NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401 }
+        );
+      }
+
+      const token = authHeader.replace("Bearer ", "");
+
+      let decoded;
+
+      try {
+        decoded = await adminAuth.verifyIdToken(token);
+      } catch (error) {
+        console.log("VERIFY TOKEN ERROR");
+        console.log(error);
+
+        return NextResponse.json(
+          {
+            error: error.message,
+            code: error.code,
+          },
+          {
+            status: 401,
+          }
+        );
+      }
+
+      // ====== BUSCAR USUARIO REAL ======
+      const loggedUser = await prisma.user.findUnique({
+        where: {
+          email: decoded.email,
+        },
+      });
+
+      if (!loggedUser) {
+        return NextResponse.json(
+          { error: "User not found" },
+          { status: 404 }
+        );
+      }
+
+      const list = await prisma.list.findUnique({
+        where: {
+          id: Number(listId),
+        },
+      });
+
+      if (!list) {
+        return NextResponse.json(
+          { error: "List not found" },
+          { status: 404 }
+        );
+      }
+
+      if (list.userID !== loggedUser.id) {
+        return NextResponse.json(
+          { error: "Forbidden" },
+          { status: 403 }
+        );
+      }
+    }
 
     await prisma.list.delete({
       where: { id: Number(listId) },
