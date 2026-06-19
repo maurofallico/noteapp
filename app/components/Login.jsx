@@ -25,7 +25,9 @@ export default function Login({reload, setReload}) {
     const response = await axios.get(`/api/user?email=${user.email}`);
     setLoading(false);
     if (!response.data.email) {
+      setLoading(true);
       await createUser();
+      setLoading(false);
       setReload(!reload);
     }
   }
