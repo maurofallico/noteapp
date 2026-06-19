@@ -87,4 +87,6 @@ const DeleteModal = forwardRef(
   }
 );
 
+DeleteModal.displayName = "DeleteModal";
+
 export default DeleteModal;
