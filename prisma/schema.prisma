@@ -1,37 +1,32 @@
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
-  schemas  = ["test"]
 }
 
 model Note {
-  id        Int      @id @default(autoincrement())
-  title     String
-  category  String[]
-  content   String
-  listID  Int
-  list     List   @relation(fields: [listID], references: [id], onDelete: Cascade)
-  @@schema("test")
+  id       Int      @id @default(autoincrement())
+  title    String
+  category String[]
+  content  String
+  listID   Int
+  list     List     @relation(fields: [listID], references: [id], onDelete: Cascade)
 }
 
 model List {
-  id       Int      @id @default(autoincrement())
-  name     String
-  notes    Note[]
-  userID   Int
-  user     User     @relation(fields: [userID], references: [id])
-  @@schema("test")
+  id     Int    @id @default(autoincrement())
+  name   String
+  userID Int
+  user   User   @relation(fields: [userID], references: [id])
+  notes  Note[]
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
-  lists    List[]
-  @@schema("test")
+  id    Int    @id @default(autoincrement())
+  email String @unique
+  lists List[]
 }
